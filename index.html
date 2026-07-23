@@ -208,8 +208,8 @@ footer span{color:var(--cyan)}
 <!-- HERO -->
 <div class="hero">
   <div class="hero-eye"><span class="blink"></span>&nbsp;AI-Powered Competitor Intelligence — SEA E-Commerce</div>
-  <h1>Turn Competitor Reviews<br>Into <span class="grad">Winning Strategy</span></h1>
-  <p class="hero-sub">CLAW scrapes thousands of competitor reviews from Shopee &amp; TikTok Shop, runs them through a localized LLM, and surfaces the exact weaknesses you can exploit — in under 30 seconds.</p>
+  <h1 id="heroTitle">Turn Competitor Reviews<br>Into <span class="grad">Winning Strategy</span></h1>
+  <p class="hero-sub" id="heroSub">CLAW scrapes thousands of competitor reviews from Shopee &amp; TikTok Shop, runs them through a localized LLM, and surfaces the exact weaknesses you can exploit — in under 30 seconds.</p>
   <div class="hero-stats">
     <div class="h-stat"><div class="num">2,000+</div><div class="lbl">Reviews Analyzed</div></div>
     <div class="h-stat"><div class="num">~30s</div><div class="lbl">Analysis Time</div></div>
@@ -458,12 +458,26 @@ const DATA = {
   supplement:{title:"Collagen Peptide 60 Caps",platform:"Shopee VN",reviewCount:1124,scores:{pain:38,freq:38,positive:74,negative:26},headline:"Their <strong>#1 issue: unclear dosage instructions</strong> — mentioned in 38 of the last 200 reviews. Buyers abandon the product before seeing results. Your opportunity: education-first marketing.",findings:[{name:"Confusing Dosage Instructions",count:"38 mentions",detail:"Buyers unsure how and when to take the product. Some stop using it due to uncertainty, then leave negative reviews despite good ingredients.",sev:"sh",opp:"Include a visual dosage guide card in every order. Pin a FAQ in your Shopee shop chat.",badge:"a"},{name:"Unrealistic Result Expectations",count:"21 mentions",detail:"Buyers expect visible results in 1–2 weeks. When results appear at 6–8 weeks, they assume the product doesn't work.",sev:"sm",opp:"Set explicit timeline expectations in your listing: 'Results visible from Week 6'.",badge:"w"},{name:"Capsule Size Too Large",count:"14 mentions",detail:"A subset of buyers — particularly older customers — find the capsule hard to swallow. Reduces completion rates.",sev:"sl",opp:"Test a powder sachet variant. Promote as 'easy to take' for a different demographic.",badge:"w"}],opportunities:["📚 Include a visual dosage guide in every order + pin a FAQ in Shopee chat.","📅 Set timeline expectations upfront: '6–8 weeks for full results'. Prevent premature disappointment.","💊 Launch a powder sachet variant to capture buyers who struggle with capsule size.","🤝 Message buyers at Day 14 and Day 45 post-purchase with encouragement and usage reminders."]}
 };
 
+const HERO={analyzer:{title:'Turn Competitor Reviews<br>Into <span class="grad">Winning Strategy</span>',sub:'CLAW scrapes thousands of competitor reviews from Shopee & TikTok Shop, runs them through a localized LLM, and surfaces the exact weaknesses you can exploit — in under 30 seconds.'},arch:{title:'System <span class="grad">Architecture</span>',sub:'How the full pipeline works — from user request to insight: Apify Actor scraping, shared cache, LLM analysis, and ranked output delivered in seconds.'},biz:{title:'Business <span class="grad">Model</span>',sub:'Unit economics, LTV:CAC, go-to-market strategy, and revenue model for the CLAW B2B SaaS subscription product.'},prd:{title:'Product <span class="grad">Requirements</span>',sub:'MVP validation, problem scoring matrix, target personas, market context, and the AI &amp; technical advantage that forms our competitive moat.'}};
 let analyzing=false;
 function sw(tab,btn){
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
   if(btn)btn.classList.add('active');
+  const h=HERO[tab];
+  if(h){
+    const t=document.getElementById('heroTitle'),s=document.getElementById('heroSub');
+    t.style.opacity='0';t.style.transform='translateY(8px)';
+    s.style.opacity='0';
+    setTimeout(()=>{
+      t.innerHTML=h.title;s.textContent=h.sub;
+      t.style.transition='opacity .35s ease,transform .35s ease';
+      s.style.transition='opacity .35s ease';
+      t.style.opacity='1';t.style.transform='translateY(0)';
+      s.style.opacity='1';
+    },180);
+  }
 }
 function runAnalysis(){
   if(analyzing)return;
