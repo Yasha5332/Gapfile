@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLAW — AI Competitor Insight Dashboard</title>
+<meta name="description" content="AI-powered competitor review analysis for e-commerce merchants. Scrape, analyze, and exploit competitor weaknesses with LLM intelligence.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#060810; --bg-1:#0c1120; --bg-2:#121928;
+  --surface:rgba(255,255,255,0.04); --surface-h:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08); --border-b:rgba(255,255,255,0.14);
+  --cyan:#00D4FF; --cyan-d:rgba(0,212,255,0.12); --cyan-g:rgba(0,212,255,0.25);
+  --violet:#7C5CFC; --violet-d:rgba(124,92,252,0.12);
+  --green:#00E599; --green-d:rgba(0,229,153,0.1);
+  --amber:#FFB547; --amber-d:rgba(255,181,71,0.1);
+  --red:#FF4D6A; --red-d:rgba(255,77,106,0.1);
+  --text:#E8EDF5; --ts:#8899B0; --tm:#4A5568;
+  --r:12px; --rs:8px; --rp:999px;
+  --tr:0.2s cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(0,212,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.015) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1140px;margin:0 auto;padding:0 24px 80px}
+/* NAV */
+.nav{display:flex;align-items:center;gap:12px;padding:20px 0;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;background:rgba(6,8,16,0.92);backdrop-filter:blur(16px)}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;letter-spacing:-0.02em}
+.logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 0 20px var(--cyan-g)}
+.nav-badge{margin-left:10px;background:var(--cyan-d);border:1px solid rgba(0,212,255,0.25);color:var(--cyan);font-size:11px;font-weight:600;padding:4px 12px;border-radius:var(--rp);letter-spacing:.06em;font-family:'JetBrains Mono',monospace}
+.nav-links{display:flex;gap:4px;margin-left:auto}
+.nav-link{padding:7px 14px;border-radius:var(--rs);font-size:13px;font-weight:500;color:var(--ts);cursor:pointer;transition:var(--tr);border:none;background:none;font-family:'Outfit',sans-serif}
+.nav-link:hover,.nav-link.active{color:var(--text);background:var(--surface-h)}
+.nav-link.active{color:var(--cyan)}
+/* HERO */
+.hero{text-align:center;padding:72px 0 48px}
+.hero-eye{display:inline-flex;align-items:center;gap:8px;background:var(--violet-d);border:1px solid rgba(124,92,252,0.25);color:#A78BFA;font-size:12px;font-weight:600;letter-spacing:.08em;padding:6px 14px;border-radius:var(--rp);margin-bottom:24px;font-family:'JetBrains Mono',monospace}
+.blink{width:6px;height:6px;border-radius:50%;background:#A78BFA;animation:pulse 2s infinite}
+.hero h1{font-size:clamp(34px,5vw,62px);font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:20px}
+.grad{background:linear-gradient(135deg,var(--cyan) 0%,var(--violet) 60%,#FF6BFF 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:17px;color:var(--ts);max-width:600px;margin:0 auto 36px;line-height:1.7}
+.hero-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-bottom:48px}
+.h-stat .num{font-size:28px;font-weight:800;color:var(--cyan);letter-spacing:-0.02em}
+.h-stat .lbl{font-size:12px;color:var(--tm);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+/* TABS */
+.tab-content{display:none}
+.tab-content.active{display:block}
+.hidden{display:none!important}
+/* PANEL */
+.panel{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:20px;position:relative;overflow:hidden}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border-b),transparent)}
+.ph{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.p-icon{width:36px;height:36px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px}
+.p-icon.c{background:var(--cyan-d);border:1px solid rgba(0,212,255,0.2)}
+.p-icon.v{background:var(--violet-d);border:1px solid rgba(124,92,252,0.2)}
+.p-icon.g{background:var(--green-d);border:1px solid rgba(0,229,153,0.2)}
+.p-icon.r{background:var(--red-d);border:1px solid rgba(255,77,106,0.2)}
+.pt{font-size:15px;font-weight:700}
+.pm{font-size:12px;color:var(--tm);font-family:'JetBrains Mono',monospace}
+/* INPUTS */
+.input-row{display:flex;gap:10px;flex-wrap:wrap}
+.url-input{flex:1;min-width:260px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:13px 16px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);outline:none;transition:var(--tr)}
+.url-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px var(--cyan-d)}
+.url-input::placeholder{color:var(--tm)}
+select.url-input{cursor:pointer}
+select.url-input option{background:#0c1120;color:var(--text)}
+.btn-p{padding:13px 24px;border-radius:var(--rs);border:none;background:linear-gradient(135deg,var(--cyan),var(--violet));color:#fff;font-size:14px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);white-space:nowrap;box-shadow:0 0 24px var(--cyan-g)}
+.btn-p:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 4px 32px var(--cyan-g)}
+.btn-p:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}
+.btn-s{padding:10px 20px;border-radius:var(--rs);border:1px solid var(--border-b);background:transparent;color:var(--ts);font-size:13px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr)}
+.btn-s:hover{color:var(--text);background:var(--surface)}
+.hint{font-size:12px;color:var(--tm);margin-top:10px}
+/* PIPELINE */
+.pipeline{display:flex;flex-direction:column;gap:6px;margin-top:20px}
+.ps{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:var(--rs);background:var(--bg-2);border:1px solid var(--border);font-size:13px;color:var(--tm);transition:var(--tr)}
+.ps.active{border-color:var(--cyan);color:var(--text);background:rgba(0,212,255,0.05)}
+.ps.done{border-color:rgba(0,229,153,0.3);color:var(--green);background:var(--green-d)}
+.pd{width:8px;height:8px;border-radius:50%;background:var(--tm);flex-shrink:0;transition:var(--tr)}
+.ps.active .pd{background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:gdot 1s ease-in-out infinite alternate}
+.ps.done .pd{background:var(--green)}
+.ps-lbl{flex:1}
+.ps-t{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--tm)}
+.ps.done .ps-t{color:var(--green)}
+/* INSIGHT HEADLINE */
+.ih{background:linear-gradient(135deg,rgba(0,212,255,0.07),rgba(124,92,252,0.07));border:1px solid rgba(0,212,255,0.18);border-radius:var(--r);padding:20px 24px;margin-bottom:20px;position:relative;overflow:hidden}
+.ih::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--cyan),var(--violet))}
+.ih .lbl{font-size:11px;color:var(--cyan);letter-spacing:.08em;font-family:'JetBrains Mono',monospace;margin-bottom:8px}
+.ih .body{font-size:15px;font-weight:500;line-height:1.6;color:var(--text)}
+.ih .body strong{color:var(--cyan)}
+/* SCORE BAND */
+.sb{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.sc{flex:1;min-width:100px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:14px 16px;text-align:center}
+.sc .n{font-size:26px;font-weight:800;letter-spacing:-0.02em}
+.sc .l{font-size:11px;color:var(--tm);margin-top:2px;letter-spacing:.04em}
+.sc.pain .n{color:var(--red)}
+.sc.freq .n{color:var(--amber)}
+.sc.mkt .n{color:var(--violet)}
+.sc.pay .n{color:var(--green)}
+/* FINDINGS */
+.fg{display:flex;flex-direction:column;gap:12px}
+.fc{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:18px 20px;display:flex;gap:16px;align-items:flex-start;transition:var(--tr);position:relative;overflow:hidden}
+.fc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.fc.sh::before{background:var(--red)}
+.fc.sm::before{background:var(--amber)}
+.fc.sl::before{background:var(--violet)}
+.fc:hover{border-color:var(--border-b);background:rgba(255,255,255,0.03);transform:translateX(3px)}
+.fr{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.fc.sh .fr{background:var(--red-d);color:var(--red)}
+.fc.sm .fr{background:var(--amber-d);color:var(--amber)}
+.fc.sl .fr{background:var(--violet-d);color:#A78BFA}
+.fb{flex:1}
+.ft{font-size:14px;font-weight:700;margin-bottom:5px}
+.fd{font-size:13px;color:var(--ts);line-height:1.6}
+.fm{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--rp);font-family:'JetBrains Mono',monospace}
+.b-c{background:var(--surface);color:var(--ts);border:1px solid var(--border)}
+.b-a{background:var(--red-d);color:var(--red);border:1px solid rgba(255,77,106,0.25)}
+.b-w{background:var(--amber-d);color:var(--amber);border:1px solid rgba(255,181,71,0.25)}
+/* BENTO */
+.bg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.bc{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--r);padding:22px;position:relative;overflow:hidden}
+.bc.w{grid-column:span 2}
+.bc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border-b),transparent)}
+.bl{font-size:11px;color:var(--tm);letter-spacing:.08em;font-family:'JetBrains Mono',monospace;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.bl .dot{width:5px;height:5px;border-radius:50%;background:var(--cyan)}
+/* BAR CHART */
+.bch{display:flex;flex-direction:column;gap:10px}
+.br{display:flex;align-items:center;gap:10px}
+.b-lbl{font-size:12px;color:var(--ts);width:130px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.b-trk{flex:1;height:8px;background:var(--bg-2);border-radius:4px;overflow:hidden}
+.b-fill{height:100%;border-radius:4px;transition:width .9s cubic-bezier(0.4,0,0.2,1)}
+.b-cnt{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--ts);width:36px;text-align:right;flex-shrink:0}
+/* SENTIMENT */
+.sent-wrap{display:flex;align-items:center;gap:24px}
+.sent-svg{width:90px;height:90px;flex-shrink:0}
+.sent-leg{display:flex;flex-direction:column;gap:8px}
+.leg-row{display:flex;align-items:center;gap:8px;font-size:12px}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* ARCH */
+.arch{display:flex;align-items:center;overflow-x:auto;padding-bottom:8px;flex-wrap:nowrap}
+.an{background:var(--bg-2);border:1px solid var(--border-b);border-radius:var(--rs);padding:12px 16px;text-align:center;flex-shrink:0}
+.an .ni{font-size:22px;margin-bottom:5px}
+.an .nl{font-size:12px;color:var(--ts);font-weight:600}
+.an .nt{font-size:10px;color:var(--tm);font-family:'JetBrains Mono',monospace;margin-top:2px}
+.a-arr{color:var(--tm);padding:0 8px;font-size:18px;flex-shrink:0}
+/* COST */
+.cr{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.cr:last-child{border-bottom:none}
+.cr .cl{color:var(--ts)}
+.cr .cv{font-family:'JetBrains Mono',monospace;font-weight:600}
+.cr .cv.pos{color:var(--green)}
+.cr .cv.hi{color:var(--cyan);font-size:17px}
+.cst{font-size:11px;color:var(--tm);letter-spacing:.08em;font-family:'JetBrains Mono',monospace;margin:14px 0 6px}
+/* REPORT HEADER */
+.rh{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.rh h2{font-size:20px;font-weight:800;letter-spacing:-0.01em}
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rp);padding:4px 12px;font-size:11px;color:var(--ts);font-family:'JetBrains Mono',monospace}
+.chip .sd{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+/* PRD TABLE */
+.sm{width:100%;border-collapse:collapse;font-size:13px}
+.sm th{text-align:left;color:var(--tm);font-size:11px;letter-spacing:.06em;font-family:'JetBrains Mono',monospace;padding:0 0 10px;border-bottom:1px solid var(--border)}
+.sm td{padding:10px 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.sm tr:last-child td{border-bottom:none}
+.star{color:var(--cyan)}
+/* PERSONA */
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pc{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:18px}
+.pa{font-size:30px;margin-bottom:8px}
+.pn{font-size:13px;font-weight:700;margin-bottom:6px}
+.pd2{font-size:12px;color:var(--ts);line-height:1.6}
+/* ANIMATIONS */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes gdot{from{box-shadow:0 0 4px var(--cyan)}to{box-shadow:0 0 14px var(--cyan)}}
+@keyframes fsi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ai{animation:fsi .35s ease forwards;opacity:0}
+.ai:nth-child(2){animation-delay:90ms}
+.ai:nth-child(3){animation-delay:180ms}
+/* GLOWS */
+.g1,.g2{position:fixed;pointer-events:none;z-index:0;border-radius:50%;filter:blur(120px);opacity:.06}
+.g1{width:500px;height:500px;background:var(--cyan);top:-150px;left:-150px}
+.g2{width:400px;height:400px;background:var(--violet);bottom:50px;right:-100px}
+/* FOOTER */
+footer{text-align:center;padding:40px 0;font-size:12px;color:var(--tm);border-top:1px solid var(--border);margin-top:60px}
+footer span{color:var(--cyan)}
+@media(max-width:680px){.bg{grid-template-columns:1fr}.bc.w{grid-column:span 1}.pg{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+<div class="g1"></div><div class="g2"></div>
+<div class="wrap">
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo"><div class="logo-icon">C</div>CLAW</div>
+  <div class="nav-links">
+    <button id="nb-a" class="nav-link active" onclick="sw('analyzer',this)">🔍 Analyzer</button>
+    <button id="nb-r" class="nav-link" onclick="sw('arch',this)">🏗️ Architecture</button>
+    <button id="nb-b" class="nav-link" onclick="sw('biz',this)">💰 Business Model</button>
+    <button id="nb-p" class="nav-link" onclick="sw('prd',this)">📋 PRD</button>
+  </div>
+  <div class="nav-badge">MVP PROTOTYPE</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eye"><span class="blink"></span>&nbsp;AI-Powered Competitor Intelligence — SEA E-Commerce</div>
+  <h1>Turn Competitor Reviews<br>Into <span class="grad">Winning Strategy</span></h1>
+  <p class="hero-sub">CLAW scrapes thousands of competitor reviews from Shopee &amp; TikTok Shop, runs them through a localized LLM, and surfaces the exact weaknesses you can exploit — in under 30 seconds.</p>
+  <div class="hero-stats">
+    <div class="h-stat"><div class="num">2,000+</div><div class="lbl">Reviews Analyzed</div></div>
+    <div class="h-stat"><div class="num">~30s</div><div class="lbl">Analysis Time</div></div>
+    <div class="h-stat"><div class="num">88%</div><div class="lbl">Gross Margin</div></div>
+    <div class="h-stat"><div class="num">17/20</div><div class="lbl">Problem Score</div></div>
+  </div>
+</div>
+
+<!-- TAB: ANALYZER -->
+<div id="tab-analyzer" class="tab-content active">
+  <div class="panel">
+    <div class="ph">
+      <div class="p-icon c">🔍</div>
+      <div><div class="pt">Competitor Product Analyzer</div><div class="pm">Shopee VN · TikTok Shop · Amazon — Apify + LLM Pipeline</div></div>
+    </div>
+    <div class="input-row">
+      <select id="productPick" class="url-input">
+        <option value="skincare">shopee.vn/product/glow-serum-30ml — Skincare / Beauty</option>
+        <option value="phonecase">shopee.vn/product/clear-phonecase-set — Phone Accessories</option>
+        <option value="sneaker">tiktokshop.vn/product/urban-runner-sneaker — Footwear</option>
+        <option value="supplement">shopee.vn/product/collagen-peptide-60caps — Health Supplements</option>
+      </select>
+      <button id="runBtn" class="btn-p" onclick="runAnalysis()">⚡ Analyze Now</button>
+    </div>
+    <p class="hint">Demo: select a preset competitor product. In production, paste any Shopee or TikTok Shop URL. No live scraping in this demo — outputs built from sample review data.</p>
+    <div id="pipeline" class="pipeline hidden">
+      <div class="ps" id="ps1"><div class="pd"></div><div class="ps-lbl">Triggering Apify Actor — scraping product &amp; reviews...</div><div class="ps-t" id="pt1">—</div></div>
+      <div class="ps" id="ps2"><div class="pd"></div><div class="ps-lbl">Running slang-aware LLM analysis (Claude API)...</div><div class="ps-t" id="pt2">—</div></div>
+      <div class="ps" id="ps3"><div class="pd"></div><div class="ps-lbl">Ranking weaknesses by mention frequency...</div><div class="ps-t" id="pt3">—</div></div>
+      <div class="ps" id="ps4"><div class="pd"></div><div class="ps-lbl">Generating opportunity playbook...</div><div class="ps-t" id="pt4">—</div></div>
+    </div>
+  </div>
+  <div id="report" class="hidden">
+    <div class="rh">
+      <h2 id="rTitle">Weakness Report</h2>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="chip"><span class="sd"></span><span id="rMeta">—</span></div>
+        <button class="btn-s" onclick="resetReport()">↺ New Analysis</button>
+      </div>
+    </div>
+    <div class="sb" id="scoreBand"></div>
+    <div class="ih"><div class="lbl">// LLM SUMMARY INSIGHT</div><div class="body" id="headline"></div></div>
+    <div class="panel" style="padding:22px">
+      <div class="ph">
+        <div class="p-icon r">⚠️</div>
+        <div><div class="pt">Top Competitor Weaknesses</div><div class="pm">Ranked by mention frequency — exploit these gaps in your positioning</div></div>
+      </div>
+      <div class="fg" id="findingsList"></div>
+    </div>
+    <div class="bg">
+      <div class="bc"><div class="bl"><div class="dot"></div>MENTION FREQUENCY</div><div class="bch" id="barChart"></div></div>
+      <div class="bc">
+        <div class="bl"><div class="dot"></div>REVIEW SENTIMENT SPLIT</div>
+        <div class="sent-wrap">
+          <svg class="sent-svg" viewBox="0 0 90 90" id="sentRing">
+            <circle fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12" cx="45" cy="45" r="36"></circle>
+            <circle id="ringNeg" fill="none" stroke="#FF4D6A" stroke-width="12" cx="45" cy="45" r="36" stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="226.2" transform="rotate(-90 45 45)"></circle>
+            <circle id="ringPos" fill="none" stroke="#00E599" stroke-width="12" cx="45" cy="45" r="36" stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="226.2" transform="rotate(-90 45 45)"></circle>
+          </svg>
+          <div class="sent-leg" id="sentLeg"></div>
+        </div>
+      </div>
+      <div class="bc w"><div class="bl"><div class="dot"></div>YOUR OPPORTUNITY PLAYBOOK — HOW TO WIN</div><div id="oppList" style="display:flex;flex-direction:column;gap:8px"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: ARCHITECTURE -->
+<div id="tab-arch" class="tab-content">
+  <div class="panel">
+    <div class="ph">
+      <div class="p-icon v">🏗️</div>
+      <div><div class="pt">System Architecture — Bot → Apify → LLM Pipeline</div><div class="pm">Full data flow from user intent to actionable insight</div></div>
+    </div>
+    <div class="arch">
+      <div class="an"><div class="ni">👤</div><div class="nl">User / Bot</div><div class="nt">Zalo / Chat</div></div>
+      <div class="a-arr">→</div>
+      <div class="an" style="border-color:var(--cyan);background:rgba(0,212,255,0.05)"><div class="ni">🔄</div><div class="nl">Cache Check</div><div class="nt">24–72h TTL</div></div>
+      <div class="a-arr">→</div>
+      <div class="an"><div class="ni">🕷️</div><div class="nl">Apify Actor</div><div class="nt">Playwright + Proxy</div></div>
+      <div class="a-arr">→</div>
+      <div class="an"><div class="ni">📦</div><div class="nl">Raw Reviews</div><div class="nt">JSON Dataset</div></div>
+      <div class="a-arr">→</div>
+      <div class="an" style="border-color:var(--violet);background:rgba(124,92,252,0.05)"><div class="ni">🧠</div><div class="nl">LLM Analysis</div><div class="nt">Claude / Ollama</div></div>
+      <div class="a-arr">→</div>
+      <div class="an" style="border-color:var(--green);background:rgba(0,229,153,0.1)"><div class="ni">📊</div><div class="nl">Dashboard</div><div class="nt">Insight Report</div></div>
+    </div>
+    <p class="hint" style="margin-top:14px">Cache hit = 0 scraping cost. When multiple users check the same competitor product, only one Apify run is charged. Shared cache is the single biggest unit economics lever.</p>
+  </div>
+  <div class="bg">
+    <div class="bc">
+      <div class="bl"><div class="dot"></div>APIFY ACTOR OPTIONS</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:14px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--amber)">Store Actor (Rented)</div>
+          <div style="font-size:12px;color:var(--ts);line-height:1.6">Pre-built Actors from Apify marketplace. Fast to deploy but author fees stack on top of platform compute + proxy costs.</div>
+        </div>
+        <div style="background:var(--bg-2);border:1px solid rgba(0,229,153,0.3);border-radius:var(--rs);padding:14px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--green)">✓ Custom Actor (Recommended)</div>
+          <div style="font-size:12px;color:var(--ts);line-height:1.6">Built with Playwright + Apify SDK. No third-party markup. Full control over proxy type, fields scraped, and review count cap.</div>
+        </div>
+      </div>
+    </div>
+    <div class="bc">
+      <div class="bl"><div class="dot"></div>APIFY PRICING (mid-2026)</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr>
+          <th style="text-align:left;color:var(--tm);padding-bottom:8px;border-bottom:1px solid var(--border)">Plan</th>
+          <th style="text-align:right;color:var(--tm);padding-bottom:8px;border-bottom:1px solid var(--border)">Cost/mo</th>
+          <th style="text-align:right;color:var(--tm);padding-bottom:8px;border-bottom:1px solid var(--border)">Credits</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:8px 0;border-bottom:1px solid var(--border);color:var(--ts)">Free</td><td style="text-align:right;font-family:JetBrains Mono,monospace;padding:8px 0;border-bottom:1px solid var(--border)">$0</td><td style="text-align:right;font-family:JetBrains Mono,monospace;color:var(--tm);padding:8px 0;border-bottom:1px solid var(--border)">~$5</td></tr>
+          <tr><td style="padding:8px 0;border-bottom:1px solid var(--border);color:var(--ts)">Starter</td><td style="text-align:right;font-family:JetBrains Mono,monospace;padding:8px 0;border-bottom:1px solid var(--border)">$29</td><td style="text-align:right;font-family:JetBrains Mono,monospace;color:var(--tm);padding:8px 0;border-bottom:1px solid var(--border)">~$35</td></tr>
+          <tr><td style="padding:8px 0;color:var(--ts)">Scale/Business</td><td style="text-align:right;font-family:JetBrains Mono,monospace;padding:8px 0">$199+</td><td style="text-align:right;font-family:JetBrains Mono,monospace;color:var(--tm);padding:8px 0">Match</td></tr>
+        </tbody>
+      </table>
+      <p class="hint" style="margin-top:10px">Cost drivers: Compute Units (RAM × runtime), residential proxy bandwidth, CAPTCHA retries, Store Actor per-result fees.</p>
+    </div>
+    <div class="bc w">
+      <div class="bl"><div class="dot"></div>4 COST CONTROL LEVERS — each reduces cost per user → increases LTV</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:16px"><div style="font-size:20px;margin-bottom:6px">🗄️</div><div style="font-size:13px;font-weight:700;margin-bottom:4px">Shared Cache</div><div style="font-size:12px;color:var(--ts);line-height:1.6">24–72h TTL across all users for same product. Popular products checked by many = near-zero marginal cost.</div></div>
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:16px"><div style="font-size:20px;margin-bottom:6px">📉</div><div style="font-size:13px;font-weight:700;margin-bottom:4px">Cap Review Count</div><div style="font-size:12px;color:var(--ts);line-height:1.6">Fetch latest 30–50 reviews per run instead of full history. Cuts Compute Unit cost significantly.</div></div>
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:16px"><div style="font-size:20px;margin-bottom:6px">🔀</div><div style="font-size:13px;font-weight:700;margin-bottom:4px">Smart Proxy Tier</div><div style="font-size:12px;color:var(--ts);line-height:1.6">Default: datacenter proxies. Escalate to residential proxies only when a page actively blocks.</div></div>
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:16px"><div style="font-size:20px;margin-bottom:6px">⏱️</div><div style="font-size:13px;font-weight:700;margin-bottom:4px">Run Timeouts</div><div style="font-size:12px;color:var(--ts);line-height:1.6">Hard timeout kills stuck jobs before they burn runaway compute. Test on 1–2 products first.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: BUSINESS MODEL -->
+<div id="tab-biz" class="tab-content">
+  <div class="bg">
+    <div class="bc">
+      <div class="bl"><div class="dot"></div>UNIT ECONOMICS — WORKED EXAMPLE</div>
+      <div style="font-size:11px;color:var(--tm);font-family:JetBrains Mono,monospace;margin-bottom:14px">20 checks/user/mo · 60% cache hit · $10/mo · 10% monthly churn</div>
+      <div class="cst">COSTS PER USER / MONTH</div>
+      <div class="cr"><span class="cl">Scraping: 8 fresh × ~$0.10</span><span class="cv">$0.80</span></div>
+      <div class="cr"><span class="cl">LLM: 20 checks × $0.02</span><span class="cv">$0.40</span></div>
+      <div class="cr"><span class="cl">Total cost / user / mo</span><span class="cv">$1.20</span></div>
+      <div class="cst">REVENUE METRICS</div>
+      <div class="cr"><span class="cl">Monthly subscription price</span><span class="cv">$10.00</span></div>
+      <div class="cr"><span class="cl">Gross margin / user / mo</span><span class="cv pos">$8.80</span></div>
+      <div class="cr"><span class="cl">Gross margin %</span><span class="cv pos">88%</span></div>
+      <div class="cst">LTV CALCULATION</div>
+      <div class="cr"><span class="cl">Avg. lifespan (1 ÷ 10%)</span><span class="cv">10 months</span></div>
+      <div class="cr"><span class="cl">LTV ($8.80 × 10)</span><span class="cv hi">≈ $88</span></div>
+      <div class="cr"><span class="cl">Max sustainable CAC (3:1)</span><span class="cv pos">≈ $29</span></div>
+    </div>
+    <div class="bc" style="display:flex;flex-direction:column;gap:18px">
+      <div>
+        <div class="bl"><div class="dot"></div>REVENUE MODEL</div>
+        <div style="background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(124,92,252,0.08));border:1px solid rgba(0,212,255,0.2);border-radius:var(--rs);padding:18px;margin-bottom:10px">
+          <div style="font-size:26px;font-weight:800;color:var(--cyan);margin-bottom:4px">$39 <span style="font-size:14px;font-weight:500;color:var(--ts)">/ month</span></div>
+          <div style="font-size:13px;color:var(--ts)">B2B SaaS — track up to 3 competitors per account. Billed monthly.</div>
+        </div>
+        <div style="font-size:12px;color:var(--tm);line-height:1.6">One competitive insight can change ad strategy worth 10× the subscription fee.</div>
+      </div>
+      <div>
+        <div class="bl"><div class="dot"></div>GO-TO-MARKET</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="font-size:12px;color:var(--ts);display:flex;gap:10px"><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--tm);flex-shrink:0">01</span>Build niche prototype targeting cosmetics or supplements.</div>
+          <div style="font-size:12px;color:var(--ts);display:flex;gap:10px"><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--tm);flex-shrink:0">02</span>Record a video case study: live analysis of a real popular brand.</div>
+          <div style="font-size:12px;color:var(--ts);display:flex;gap:10px"><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--tm);flex-shrink:0">03</span>Distribute in Facebook / Zalo e-commerce seller groups.</div>
+          <div style="font-size:12px;color:var(--ts);display:flex;gap:10px"><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--tm);flex-shrink:0">04</span>Convert organic interest to $39/mo recurring SaaS subscriptions.</div>
+        </div>
+      </div>
+      <div>
+        <div class="bl"><div class="dot"></div>TARGET LTV : CAC</div>
+        <div style="font-size:40px;font-weight:800;color:var(--green)">3 : 1 <span style="font-size:16px;color:var(--tm);font-weight:400">target</span></div>
+        <div style="font-size:12px;color:var(--tm);margin-top:4px">LTV ≈ $88 → max CAC before erosion ≈ $29 per customer acquired</div>
+      </div>
+    </div>
+    <div class="bc w">
+      <div class="bl"><div class="dot"></div>TARGET PERSONAS</div>
+      <div class="pg">
+        <div class="pc"><div class="pa">🛍️</div><div class="pn">Persona A — Independent Brand Owner</div><div class="pd2">Runs a Shopify or local e-commerce store (cosmetics, supplements). Knows competitors exist and are winning market share, but doesn't have time to manually read 5,000 reviews. Needs instant, ranked insights to act on today.</div></div>
+        <div class="pc"><div class="pa">📣</div><div class="pn">Persona B — Boutique Marketing Agency</div><div class="pd2">Manages ads for 5–10 e-commerce clients. Needs beautiful, data-backed reports to prove market gap understanding to clients and justify ad copy changes. Retention depends on results.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: PRD -->
+<div id="tab-prd" class="tab-content">
+  <div class="panel">
+    <div class="ph">
+      <div class="p-icon g">📋</div>
+      <div><div class="pt">Product Requirements Document — AI E-Commerce Competitor Intelligence</div><div class="pm">MVP Validation &amp; Technical Specification</div></div>
+    </div>
+    <div class="ih" style="margin-bottom:24px">
+      <div class="lbl">// PRODUCT VISION</div>
+      <div class="body">Democratize enterprise-level market intelligence for independent e-commerce merchants — turning thousands of unstructured competitor reviews into <strong>instant, actionable marketing strategy</strong>. The wedge: scrape a competitor URL, run reviews through a localized LLM, visually map their biggest weaknesses so our user can exploit them.</div>
+    </div>
+    <div class="bl" style="margin-bottom:12px"><div class="dot"></div>PROBLEM SCORING MATRIX</div>
+    <table class="sm">
+      <thead><tr><th>METRIC</th><th style="padding-right:20px">SCORE</th><th>JUSTIFICATION</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Pain Level</strong></td><td style="padding-right:20px"><span class="star">★★★★</span>☆ <span style="font-family:JetBrains Mono,monospace;font-size:12px;color:var(--ts)">4/5</span></td><td style="color:var(--ts);font-size:13px">Losing market share directly and immediately impacts revenue</td></tr>
+        <tr><td><strong>Frequency</strong></td><td style="padding-right:20px"><span class="star">★★★★</span>☆ <span style="font-family:JetBrains Mono,monospace;font-size:12px;color:var(--ts)">4/5</span></td><td style="color:var(--ts);font-size:13px">Competitor monitoring requires weekly or monthly checks — recurring need</td></tr>
+        <tr><td><strong>Market Size</strong></td><td style="padding-right:20px"><span class="star">★★★★</span>☆ <span style="font-family:JetBrains Mono,monospace;font-size:12px;color:var(--ts)">4/5</span></td><td style="color:var(--ts);font-size:13px">Millions of active e-commerce merchants locally and globally</td></tr>
+        <tr><td><strong>Willingness to Pay</strong></td><td style="padding-right:20px"><span class="star">★★★★★</span> <span style="font-family:JetBrains Mono,monospace;font-size:12px;color:var(--ts)">5/5</span></td><td style="color:var(--ts);font-size:13px">Tools uncovering competitive advantages have clear, immediate ROI</td></tr>
+        <tr style="border-top:2px solid var(--border-b)"><td><strong style="font-size:14px">TOTAL</strong></td><td><span style="font-size:22px;font-weight:800;color:var(--green)">17/20</span></td><td style="color:var(--green);font-size:13px;font-weight:700">✓ Proceed with MVP</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="bg">
+    <div class="bc">
+      <div class="bl"><div class="dot"></div>MARKET CONTEXT (SEA)</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="font-size:13px;color:var(--ts);line-height:1.5">📈 <span style="color:var(--text);font-weight:600">Growing Industry</span> — SEA e-commerce rapid expansion; Shopee gaining massive traction. Low entry barriers intensify competition daily.</div>
+        <div style="font-size:13px;color:var(--ts);line-height:1.5">💰 <span style="color:var(--text);font-weight:600">Active Spending</span> — Marketing teams actively invest in competitive analysis tools. High-intent search for "review scrapers".</div>
+        <div style="font-size:13px;color:var(--ts);line-height:1.5">🤖 <span style="color:var(--text);font-weight:600">AI Transforms</span> — Uniquely critical for local slang in Vietnamese/Thai/Bahasa reviews. Existing tools miss this entirely.</div>
+      </div>
+    </div>
+    <div class="bc">
+      <div class="bl"><div class="dot"></div>CURRENT MARKET FLAWS</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:var(--red-d);border:1px solid rgba(255,77,106,0.2);border-radius:var(--rs);padding:12px;font-size:12px;color:var(--ts)">❌ Sentiment tools focus on formal English — miss local slang completely.</div>
+        <div style="background:var(--red-d);border:1px solid rgba(255,77,106,0.2);border-radius:var(--rs);padding:12px;font-size:12px;color:var(--ts)">❌ Basic scrapers only track price — miss qualitative pain like "customer service" complaints.</div>
+        <div style="background:var(--red-d);border:1px solid rgba(255,77,106,0.2);border-radius:var(--rs);padding:12px;font-size:12px;color:var(--ts)">❌ Enterprise tools output raw CSVs needing hours of manual sorting.</div>
+        <div style="background:var(--green-d);border:1px solid rgba(0,229,153,0.2);border-radius:var(--rs);padding:12px;font-size:12px;color:var(--green);font-weight:600">✓ CLAW: visual, ranked, actionable — zero manual effort required.</div>
+      </div>
+    </div>
+    <div class="bc w">
+      <div class="bl"><div class="dot"></div>AI &amp; TECHNICAL COMPETITIVE MOAT</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:18px"><div style="font-size:14px;font-weight:700;color:var(--violet);margin-bottom:8px">🧠 Backend — AI Engine</div><div style="font-size:13px;color:var(--ts);line-height:1.6">Local LLM via Ollama (cost-efficient) + Claude API fallback. Handles local slang. Not just keyword matching — true sentiment categorization.</div></div>
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:18px"><div style="font-size:14px;font-weight:700;color:var(--cyan);margin-bottom:8px">🎨 Frontend — Dashboard UX</div><div style="font-size:13px;color:var(--ts);line-height:1.6">Bento grid, glassmorphism, pill components. Built with Next.js + TypeScript + Tailwind V4. E-commerce merchants buy with their eyes — UI IS the moat.</div></div>
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:18px"><div style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:8px">🕷️ Data Layer — Apify</div><div style="font-size:13px;color:var(--ts);line-height:1.6">Custom Playwright Actor handles JS-rendered pages + anti-bot on Shopee/TikTok Shop. Proxy rotation, headless browser, cost-controlled via shared cache.</div></div>
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:18px"><div style="font-size:14px;font-weight:700;color:var(--amber);margin-bottom:8px">📡 Distribution — Zalo / Bot</div><div style="font-size:13px;color:var(--ts);line-height:1.6">Deliver insights via chat bots (Zalo, Telegram) where merchants already live. No app install friction. Meet users where they are.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+<footer><div class="wrap"><span>CLAW</span> — AI Competitor Insight Dashboard &nbsp;·&nbsp; MVP Prototype &nbsp;·&nbsp; Sample data only, no live scraping in this demo.</div></footer>
+
+<script>
+const DATA = {
+  skincare:{title:"Glow Serum 30ml",platform:"Shopee VN",reviewCount:1842,scores:{pain:61,freq:61,positive:68,negative:32},headline:"Their <strong>#1 issue: shipping delays</strong> — mentioned in 61 of the last 200 reviews. Multiple buyers note it happened on repeat orders. Your opportunity: lead with same-day dispatch guarantees.",findings:[{name:"Shipping Delays",count:"61 mentions",detail:"Buyers repeatedly report orders arriving 5–10 days late. Several note this happened on repeat orders. A trust-eroding pattern.",sev:"sh",opp:"Guarantee 24h dispatch in your listing title. This single claim captures every frustrated switcher.",badge:"a"},{name:"Slow Support Replies",count:"34 mentions",detail:"Multiple reviews mention waiting 24+ hours for a reply. Buyers escalate to 1-star reviews purely because they felt ignored.",sev:"sm",opp:"Offer a 2-hour response SLA or chatbot triage. Promote this visibly in your listing.",badge:"w"},{name:"Packaging Leaks",count:"19 mentions",detail:"A recurring subset describe bottles arriving partially leaked or with the cap loosened. Suggests inadequate inner packaging.",sev:"sl",opp:"Use sealed inner pouches. Photograph the protective packaging as a quality signal.",badge:"w"}],opportunities:["🚀 Lead your Shopee listing with '24-hour guaranteed dispatch' — directly attacking their #1 weakness.","💬 Implement a 2-hour support auto-response. Even an acknowledgement prevents 1-star reviews.","📦 Invest in leak-proof sealed inner pouches and make it visible in product photos.","⭐ Follow up with buyers at Day 7 via Shopee chat to preempt negative reviews."]},
+  phonecase:{title:"Clear Phonecase Set",platform:"Shopee VN",reviewCount:963,scores:{pain:47,freq:47,positive:71,negative:29},headline:"Their <strong>#1 issue: color mismatch from listing photos</strong> — mentioned in 47 of the last 200 reviews. Buyers feel deceived. Your opportunity: hyper-accurate product photography.",findings:[{name:"Color Mismatch vs Photos",count:"47 mentions",detail:"Actual case tint looks noticeably different (often yellower) than listing photos. Buyers feel deceived and express this publicly.",sev:"sh",opp:"Shoot true-color photography under natural light + add unboxing video showing real color.",badge:"a"},{name:"Fit Issues — New Models",count:"28 mentions",detail:"Camera cutout misalignment reported on recent phone releases. Indicates catalog isn't updated promptly after launches.",sev:"sm",opp:"Update SKU lineup within 2 weeks of any new phone release. Advertise 'New Model Compatible'.",badge:"w"},{name:"Difficult Return Process",count:"15 mentions",detail:"A smaller group describe difficulty getting a return accepted for a defective case. Creates visible friction.",sev:"sl",opp:"Offer a visible, no-questions 7-day free return. Use this as a trust signal prominently.",badge:"w"}],opportunities:["📸 Invest in professional natural-light photography — eliminate the color-deception complaint at source.","📱 Build a rapid SKU update process to be first-to-market for each new phone model launch.","↩️ Display a frictionless return policy prominently — converts hesitant buyers into confident ones.","🎬 Post unboxing video showing the real color in different lighting conditions."]},
+  sneaker:{title:"Urban Runner Sneaker",platform:"TikTok Shop VN",reviewCount:2210,scores:{pain:88,freq:88,positive:58,negative:42},headline:"Their <strong>#1 issue: sizing runs small</strong> — mentioned in 88 of the last 200 reviews. Nearly half the buyers order the wrong size. Your opportunity: a clear, localized Vietnamese size guide.",findings:[{name:"Sizing Runs Small",count:"88 mentions",detail:"The dominant complaint by far. Many buyers recommend ordering one size up. Leads to returns, negative reviews, and lost trust at scale.",sev:"sh",opp:"Publish a detailed size chart with cm foot-length measurements. Offer free size exchange guarantee.",badge:"a"},{name:"Sole Wears Down Quickly",count:"31 mentions",detail:"Visible sole wear reported within the first month of regular use. Signals a materials quality gap versus the price point.",sev:"sm",opp:"Source a higher-durability sole compound. Highlight 'reinforced sole + durability warranty'.",badge:"w"},{name:"Inconsistent Stock",count:"22 mentions",detail:"Popular sizes go out of stock for weeks at a time. Frustrated buyers switch to alternatives rather than wait.",sev:"sl",opp:"Maintain safety stock for top 3 sizes. Add back-in-stock notification to the product page.",badge:"w"}],opportunities:["📏 Create a Vietnamese-language size chart with foot-length measurements in cm — solve the #1 complaint.","🔄 Offer a free first-time size exchange — removes the biggest purchase barrier.","🏭 Negotiate a higher-grade sole compound to differentiate on durability.","📦 Hold safety stock for sizes 40–43 so you're never out-of-stock on top SKUs."]},
+  supplement:{title:"Collagen Peptide 60 Caps",platform:"Shopee VN",reviewCount:1124,scores:{pain:38,freq:38,positive:74,negative:26},headline:"Their <strong>#1 issue: unclear dosage instructions</strong> — mentioned in 38 of the last 200 reviews. Buyers abandon the product before seeing results. Your opportunity: education-first marketing.",findings:[{name:"Confusing Dosage Instructions",count:"38 mentions",detail:"Buyers unsure how and when to take the product. Some stop using it due to uncertainty, then leave negative reviews despite good ingredients.",sev:"sh",opp:"Include a visual dosage guide card in every order. Pin a FAQ in your Shopee shop chat.",badge:"a"},{name:"Unrealistic Result Expectations",count:"21 mentions",detail:"Buyers expect visible results in 1–2 weeks. When results appear at 6–8 weeks, they assume the product doesn't work.",sev:"sm",opp:"Set explicit timeline expectations in your listing: 'Results visible from Week 6'.",badge:"w"},{name:"Capsule Size Too Large",count:"14 mentions",detail:"A subset of buyers — particularly older customers — find the capsule hard to swallow. Reduces completion rates.",sev:"sl",opp:"Test a powder sachet variant. Promote as 'easy to take' for a different demographic.",badge:"w"}],opportunities:["📚 Include a visual dosage guide in every order + pin a FAQ in Shopee chat.","📅 Set timeline expectations upfront: '6–8 weeks for full results'. Prevent premature disappointment.","💊 Launch a powder sachet variant to capture buyers who struggle with capsule size.","🤝 Message buyers at Day 14 and Day 45 post-purchase with encouragement and usage reminders."]}
+};
+
+let analyzing=false;
+function sw(tab,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(btn)btn.classList.add('active');
+}
+function runAnalysis(){
+  if(analyzing)return;
+  analyzing=true;
+  const btn=document.getElementById('runBtn');
+  btn.disabled=true;btn.textContent='⏳ Analyzing…';
+  document.getElementById('report').classList.add('hidden');
+  const pl=document.getElementById('pipeline');
+  pl.classList.remove('hidden');
+  const sids=['ps1','ps2','ps3','ps4'],tids=['pt1','pt2','pt3','pt4'],dur=[900,750,600,500];
+  sids.forEach(id=>document.getElementById(id).classList.remove('active','done'));
+  tids.forEach(id=>{document.getElementById(id).textContent='—'});
+  let i=0;
+  function next(){
+    if(i>0){document.getElementById(sids[i-1]).classList.replace('active','done');document.getElementById(tids[i-1]).textContent=(dur[i-1]/1000).toFixed(1)+'s';}
+    if(i<sids.length){document.getElementById(sids[i]).classList.add('active');i++;setTimeout(next,dur[i-1]);}
+    else{setTimeout(renderReport,350);}
+  }
+  next();
+}
+function renderReport(){
+  const key=document.getElementById('productPick').value,d=DATA[key];
+  document.getElementById('rTitle').textContent='Weakness Report — '+d.title;
+  document.getElementById('rMeta').textContent=d.reviewCount.toLocaleString()+' reviews · '+d.platform;
+  document.getElementById('headline').innerHTML=d.headline;
+  document.getElementById('scoreBand').innerHTML=`<div class="sc pain"><div class="n">${d.scores.pain}</div><div class="l">Top Complaint</div></div><div class="sc freq"><div class="n">${d.scores.freq}</div><div class="l">Pain Mentions</div></div><div class="sc mkt"><div class="n">${d.reviewCount.toLocaleString()}</div><div class="l">Reviews Scanned</div></div><div class="sc pay"><div class="n">${d.scores.positive}%</div><div class="l">Positive Ratio</div></div>`;
+  const list=document.getElementById('findingsList');
+  list.innerHTML='';
+  d.findings.forEach((f,idx)=>{
+    const el=document.createElement('div');
+    el.className='fc '+f.sev+' ai';
+    el.innerHTML=`<div class="fr">${String(idx+1).padStart(2,'0')}</div><div class="fb"><div class="ft">${f.name}</div><div class="fd">${f.detail}</div><div class="fm"><span class="badge b-c">${f.count}</span><span class="badge b-${f.badge}">⚡ ${f.opp.substring(0,72)}${f.opp.length>72?'…':''}</span></div></div>`;
+    list.appendChild(el);
+  });
+  const bc=document.getElementById('barChart');
+  bc.innerHTML='';
+  const cols=['#FF4D6A','#FFB547','#7C5CFC'],maxC=Math.max(...d.findings.map(f=>parseInt(f.count)));
+  d.findings.forEach((f,idx)=>{
+    const cnt=parseInt(f.count),pct=Math.round(cnt/maxC*100),row=document.createElement('div');
+    row.className='br';
+    row.innerHTML=`<div class="b-lbl">${f.name}</div><div class="b-trk"><div class="b-fill" style="width:0%;background:${cols[idx]}" data-w="${pct}"></div></div><div class="b-cnt">${cnt}</div>`;
+    bc.appendChild(row);
+  });
+  setTimeout(()=>{document.querySelectorAll('.b-fill').forEach(el=>{el.style.width=el.dataset.w+'%';});},80);
+  const circ=226.2;
+  setTimeout(()=>{
+    document.getElementById('ringNeg').style.strokeDashoffset=circ*(1-d.scores.negative/100);
+    document.getElementById('ringPos').style.strokeDashoffset=circ*(1-d.scores.positive/100);
+  },200);
+  document.getElementById('sentLeg').innerHTML=`<div class="leg-row"><div class="leg-dot" style="background:#00E599"></div><span style="color:var(--ts)">${d.scores.positive}% Positive</span></div><div class="leg-row"><div class="leg-dot" style="background:#FF4D6A"></div><span style="color:var(--ts)">${d.scores.negative}% Negative</span></div><div class="leg-row"><div class="leg-dot" style="background:var(--tm)"></div><span style="color:var(--tm)">${100-d.scores.positive-d.scores.negative}% Neutral</span></div>`;
+  const ol=document.getElementById('oppList');
+  ol.innerHTML='';
+  d.opportunities.forEach((o,idx)=>{
+    const el=document.createElement('div');
+    el.style.cssText='background:var(--bg-2);border:1px solid var(--border);border-radius:var(--rs);padding:12px 16px;font-size:13px;color:var(--ts);display:flex;gap:14px;align-items:flex-start';
+    el.innerHTML=`<span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--tm);flex-shrink:0;margin-top:2px">${String(idx+1).padStart(2,'0')}</span><span>${o}</span>`;
+    ol.appendChild(el);
+  });
+  document.getElementById('pipeline').classList.add('hidden');
+  document.getElementById('report').classList.remove('hidden');
+  const btn=document.getElementById('runBtn');
+  btn.disabled=false;btn.textContent='⚡ Analyze Now';
+  analyzing=false;
+  document.getElementById('report').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function resetReport(){
+  document.getElementById('report').classList.add('hidden');
+  document.getElementById('pipeline').classList.add('hidden');
+  ['ps1','ps2','ps3','ps4'].forEach(id=>document.getElementById(id).classList.remove('active','done'));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

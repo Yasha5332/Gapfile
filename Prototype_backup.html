@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLAW — AI Competitor Insight Dashboard</title>
+<meta name="description" content="AI-powered competitor review analysis for e-commerce merchants. Scrape, analyze, and exploit competitor weaknesses with LLM intelligence.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EAE4D4;
+    --paper-raised:#F3EEDF;
+    --ink:#26241D;
+    --ink-soft:#514E42;
+    --stamp:#A6301F;
+    --stamp-dark:#7A2116;
+    --olive:#6B6B45;
+    --line:#C7BFA6;
+    --line-strong:#a89f80;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;line-height:1.55;}
+  .stencil{font-family:'Special Elite',monospace;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+
+  nav{border-bottom:1px solid var(--line);padding:20px 0;}
+  nav .wrap{display:flex;align-items:center;gap:10px;}
+  .logo-mark{width:26px;height:26px;border:2px solid var(--ink);border-radius:3px;position:relative;flex:none;}
+  .logo-mark::after{content:"";position:absolute;left:5px;right:5px;top:8px;height:2px;background:var(--stamp);}
+  .logo-mark::before{content:"";position:absolute;left:5px;right:9px;top:13px;height:2px;background:var(--ink);}
+  nav span{font-size:17px;font-weight:600;}
+  nav .tag{margin-left:auto;font-size:11px;color:var(--olive);}
+
+  header{padding:56px 0 8px;text-align:center;}
+  header h1{font-size:30px;font-weight:600;margin:0 0 12px;letter-spacing:-0.01em;}
+  header p{color:var(--ink-soft);max-width:520px;margin:0 auto;font-size:15px;}
+
+  .panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:4px;padding:26px;margin:36px 0;box-shadow:5px 5px 0 rgba(38,36,29,0.05);}
+  .panel-label{font-size:11px;color:var(--olive);margin-bottom:14px;display:flex;justify-content:space-between;}
+
+  .field-row{display:flex;gap:10px;flex-wrap:wrap;}
+  select, input[type=text]{
+    flex:1;min-width:220px;padding:12px 14px;border:1px solid var(--line-strong);border-radius:2px;
+    background:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);
+  }
+  select:focus, input:focus{outline:none;border-color:var(--stamp);}
+  button{
+    border:1.5px solid var(--ink);background:var(--stamp);color:var(--paper);border-radius:2px;
+    padding:12px 22px;font-size:14px;font-weight:600;cursor:pointer;border-color:var(--stamp);
+  }
+  button:hover{background:var(--stamp-dark);border-color:var(--stamp-dark);}
+  button:disabled{opacity:0.55;cursor:default;}
+
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:10px;}
+
+  /* progress */
+  #progress{display:none;margin-top:24px;}
+  .step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-soft);padding:6px 0;}
+  .step .dot{width:8px;height:8px;border-radius:50%;background:var(--line-strong);flex:none;transition:background .3s;}
+  .step.active .dot{background:var(--stamp);}
+  .step.done .dot{background:var(--olive);}
+  .step.done{color:var(--ink);}
+
+  /* report */
+  #report{display:none;margin-top:36px;}
+  .report-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px dashed var(--line-strong);padding-bottom:12px;margin-bottom:18px;}
+  .report-head h2{font-size:19px;margin:0;font-weight:600;}
+  .finding{background:var(--paper-raised);border:1px solid var(--line);border-radius:3px;padding:16px 18px;margin-bottom:12px;position:relative;}
+  .finding .rank{font-family:'Special Elite',monospace;color:var(--stamp);font-size:15px;margin-right:8px;}
+  .finding h4{display:inline;font-size:14.5px;font-weight:600;}
+  .finding p{margin:8px 0 0;font-size:13.5px;color:var(--ink-soft);}
+  .finding .count{float:right;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--olive);}
+
+  .headline{background:var(--ink);color:var(--paper);border-radius:4px;padding:18px 20px;margin-bottom:20px;font-size:14.5px;}
+  .headline b{color:#F0C9B8;}
+
+  footer{text-align:center;padding:40px 0 60px;font-size:12px;color:var(--ink-soft);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="logo-mark"></span>
+    <span>GapFile</span>
+    <span class="tag mono">MVP PROTOTYPE — CLICKABLE DEMO</span>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <h1>Try the core flow</h1>
+    <p>Pick a sample competitor listing below, run the analysis, and see the ranked weakness report GapFile would return through Zalo. No live scraping in this demo — outputs are pre-built from sample review data.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="panel">
+    <div class="panel-label mono"><span>STEP 1 — SUBMIT A COMPETITOR</span><span>demo data</span></div>
+    <div class="field-row">
+      <select id="productPick">
+        <option value="skincare">shopee.vn/product/glow-serum-30ml</option>
+        <option value="phonecase">shopee.vn/product/clear-phonecase-set</option>
+        <option value="sneaker">tiktokshop.vn/product/urban-runner-sneaker</option>
+      </select>
+      <button id="runBtn">Analyze →</button>
+    </div>
+    <div class="hint">Paste any Shopee or TikTok Shop URL here in the real product — this demo uses a fixed set of sample listings.</div>
+
+    <div id="progress">
+      <div class="step" id="s1"><span class="dot"></span><span>Scraping reviews from listing (Apify)</span></div>
+      <div class="step" id="s2"><span class="dot"></span><span>Running slang-aware LLM analysis</span></div>
+      <div class="step" id="s3"><span class="dot"></span><span>Ranking findings</span></div>
+    </div>
+  </div>
+
+  <div id="report">
+    <div class="report-head">
+      <h2 id="reportTitle">Weakness report</h2>
+      <span class="mono" style="font-size:11px;color:var(--olive)" id="reportMeta"></span>
+    </div>
+    <div class="headline mono" id="headline"></div>
+    <div id="findingsList"></div>
+  </div>
+</div>
+
+<footer>GapFile MVP prototype — sample data only, no live scraping in this demo.</footer>
+
+<script>
+const DATA = {
+  skincare: {
+    title: "Glow Serum 30ml",
+    reviewCount: 1842,
+    headline: "Their #1 issue: shipping delays, mentioned in 61 of the last 200 reviews.",
+    findings: [
+      { name: "Shipping delays", count: "61 mentions", detail: "Buyers repeatedly note orders arriving 5–10 days late, several mentioning it happened more than once." },
+      { name: "Slow support replies", count: "34 mentions", detail: "Multiple reviews mention waiting over 24 hours for a reply to a product question or complaint." },
+      { name: "Packaging leaks in transit", count: "19 mentions", detail: "A recurring subset of reviews describe the bottle arriving partially leaked or cap loosened." }
+    ]
+  },
+  phonecase: {
+    title: "Clear Phonecase Set",
+    reviewCount: 963,
+    headline: "Their #1 issue: color mismatch from listing photos, mentioned in 47 of the last 200 reviews.",
+    findings: [
+      { name: "Color mismatch", count: "47 mentions", detail: "Buyers say the actual case tint looks noticeably different (often yellower) than the product photos." },
+      { name: "Fit issues on newer phone models", count: "28 mentions", detail: "Several reviews mention camera cutout misalignment on recent phone releases." },
+      { name: "Weak return process", count: "15 mentions", detail: "A smaller group describe difficulty getting a return accepted for a defective case." }
+    ]
+  },
+  sneaker: {
+    title: "Urban Runner Sneaker",
+    reviewCount: 2210,
+    headline: "Their #1 issue: sizing runs small, mentioned in 88 of the last 200 reviews.",
+    findings: [
+      { name: "Sizing runs small", count: "88 mentions", detail: "The most repeated complaint by far — many buyers recommend ordering one size up." },
+      { name: "Sole wears down quickly", count: "31 mentions", detail: "A recurring group of reviews report visible sole wear within the first month of regular use." },
+      { name: "Inconsistent stock / long backorders", count: "22 mentions", detail: "Buyers mention popular sizes going out of stock for weeks at a time." }
+    ]
+  }
+};
+
+const runBtn = document.getElementById('runBtn');
+const progress = document.getElementById('progress');
+const report = document.getElementById('report');
+const steps = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3')];
+
+runBtn.addEventListener('click', () => {
+  report.style.display = 'none';
+  progress.style.display = 'block';
+  steps.forEach(s => s.classList.remove('active','done'));
+  runBtn.disabled = true;
+  runBtn.textContent = 'Analyzing…';
+
+  let i = 0;
+  function nextStep() {
+    if (i > 0) steps[i-1].classList.replace('active','done');
+    if (i < steps.length) {
+      steps[i].classList.add('active');
+      i++;
+      setTimeout(nextStep, 650);
+    } else {
+      showReport();
+    }
+  }
+  nextStep();
+});
+
+function showReport() {
+  const key = document.getElementById('productPick').value;
+  const d = DATA[key];
+
+  document.getElementById('reportTitle').textContent = 'Weakness report — ' + d.title;
+  document.getElementById('reportMeta').textContent = d.reviewCount.toLocaleString() + ' reviews scanned';
+  document.getElementById('headline').innerHTML = d.headline;
+
+  const list = document.getElementById('findingsList');
+  list.innerHTML = '';
+  d.findings.forEach((f, idx) => {
+    const el = document.createElement('div');
+    el.className = 'finding';
+    el.innerHTML =
+      '<span class="count mono">' + f.count + '</span>' +
+      '<span class="rank">0' + (idx+1) + '</span><h4>' + f.name + '</h4>' +
+      '<p>' + f.detail + '</p>';
+    list.appendChild(el);
+  });
+
+  progress.style.display = 'none';
+  report.style.display = 'block';
+  runBtn.disabled = false;
+  runBtn.textContent = 'Analyze →';
+  report.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+
+</body>
+</html>
