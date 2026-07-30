@@ -198,10 +198,49 @@ select.url-input{cursor:pointer;font-weight:500;}
 footer{text-align:center;padding:44px 0;font-size:12.5px;color:var(--olive);border-top:1px solid var(--line);margin-top:60px;background:var(--paper-raised);}
 footer span{color:var(--stamp);font-weight:600;}
 
+body{overflow-x:hidden;}
+.table-responsive{overflow-x:auto;width:100%;-webkit-overflow-scrolling:touch;}
+
 @media(max-width:768px){
   .bg{grid-template-columns:1fr;}
   .bc.w{grid-column:span 1;}
-  .nav-links{display:none;}
+  .nav{flex-wrap:wrap;gap:10px;padding:12px 0;}
+  .nav-links{
+    display:flex!important;
+    overflow-x:auto;
+    padding-bottom:6px;
+    white-space:nowrap;
+    width:100%;
+    -webkit-overflow-scrolling:touch;
+    gap:4px;
+  }
+  .nav-links::-webkit-scrollbar{height:3px;}
+  .nav-links::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:2px;}
+  .nav-link{font-size:12px;padding:6px 10px;flex-shrink:0;}
+  .nav-title{font-size:16px;}
+  .nav-badge{display:none;}
+  .hero{padding:32px 0 24px;}
+  .hero h1{font-size:clamp(22px, 5vw, 36px);}
+  .panel{padding:18px 16px;}
+  .url-input{min-width:0;width:100%;}
+  .input-row{flex-direction:column;align-items:stretch;}
+  .btn-p{width:100%;text-align:center;}
+  .b-lbl{width:90px;}
+  .sc{min-width:calc(50% - 7px);}
+  .sb{gap:10px;}
+  .sent-wrap{flex-direction:column;align-items:center;text-align:center;}
+  .fc{flex-direction:column;gap:10px;}
+  .fm{width:100%;}
+  .ad-hook-btn{margin-left:0;margin-top:4px;width:100%;text-align:center;}
+  .ih{padding:18px 16px;}
+}
+
+@media(max-width:480px){
+  .wrap{padding:0 12px 40px;}
+  .hero-stats{gap:16px;}
+  .h-stat .num{font-size:22px;}
+  .h-stat .lbl{font-size:10px;}
+  .hero-eye{font-size:10px;padding:4px 10px;}
 }
 </style>
 </head>
@@ -332,42 +371,44 @@ footer span{color:var(--stamp);font-weight:600;}
         <div class="pm mono">Side-by-side operational evaluation against industry standards</div>
       </div>
     </div>
-    <table class="matrix-table">
-      <thead>
-        <tr>
-          <th>OPERATIONAL METRIC</th>
-          <th>TARGET COMPETITOR</th>
-          <th>INDUSTRY AVERAGE</th>
-          <th>YOUR OPPORTUNITY GAP</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Shipping Speed SLA</strong></td>
-          <td><div class="meter-bar"><div class="meter-fill" style="width:35%;background:var(--stamp)"></div></div> 35% SLA</td>
-          <td><div class="meter-bar"><div class="meter-fill" style="width:70%;background:var(--olive)"></div></div> 70% SLA</td>
-          <td><strong style="color:var(--stamp)">+35% SLA Advantage</strong> — Guarantee 24h dispatch</td>
-        </tr>
-        <tr>
-          <td><strong>Packaging Durability</strong></td>
-          <td><div class="meter-bar"><div class="meter-fill" style="width:50%;background:var(--amber)"></div></div> 50% Safe</td>
-          <td><div class="meter-bar"><div class="meter-fill" style="width:85%;background:var(--olive)"></div></div> 85% Safe</td>
-          <td><strong style="color:var(--green)">+35% Quality Signal</strong> — Use sealed inner pouches</td>
-        </tr>
-        <tr>
-          <td><strong>Support Response Speed</strong></td>
-          <td><div class="meter-bar"><div class="meter-fill" style="width:25%;background:var(--stamp)"></div></div> 24h SLA</td>
-          <td><div class="meter-bar"><div class="meter-fill" style="width:60%;background:var(--olive)"></div></div> 4h SLA</td>
-          <td><strong style="color:var(--stamp)">2-Hour Chat Bot SLA</strong> — Prevent negative reviews</td>
-        </tr>
-        <tr>
-          <td><strong>Listing Photo Accuracy</strong></td>
-          <td><div class="meter-bar"><div class="meter-fill" style="width:45%;background:var(--amber)"></div></div> Mismatch</td>
-          <td><div class="meter-bar"><div class="meter-fill" style="width:80%;background:var(--olive)"></div></div> Accurate</td>
-          <td><strong style="color:var(--green)">Natural Light Photos</strong> — Eliminate color deception</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>OPERATIONAL METRIC</th>
+            <th>TARGET COMPETITOR</th>
+            <th>INDUSTRY AVERAGE</th>
+            <th>YOUR OPPORTUNITY GAP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Shipping Speed SLA</strong></td>
+            <td><div class="meter-bar"><div class="meter-fill" style="width:35%;background:var(--stamp)"></div></div> 35% SLA</td>
+            <td><div class="meter-bar"><div class="meter-fill" style="width:70%;background:var(--olive)"></div></div> 70% SLA</td>
+            <td><strong style="color:var(--stamp)">+35% SLA Advantage</strong> — Guarantee 24h dispatch</td>
+          </tr>
+          <tr>
+            <td><strong>Packaging Durability</strong></td>
+            <td><div class="meter-bar"><div class="meter-fill" style="width:50%;background:var(--amber)"></div></div> 50% Safe</td>
+            <td><div class="meter-bar"><div class="meter-fill" style="width:85%;background:var(--olive)"></div></div> 85% Safe</td>
+            <td><strong style="color:var(--green)">+35% Quality Signal</strong> — Use sealed inner pouches</td>
+          </tr>
+          <tr>
+            <td><strong>Support Response Speed</strong></td>
+            <td><div class="meter-bar"><div class="meter-fill" style="width:25%;background:var(--stamp)"></div></div> 24h SLA</td>
+            <td><div class="meter-bar"><div class="meter-fill" style="width:60%;background:var(--olive)"></div></div> 4h SLA</td>
+            <td><strong style="color:var(--stamp)">2-Hour Chat Bot SLA</strong> — Prevent negative reviews</td>
+          </tr>
+          <tr>
+            <td><strong>Listing Photo Accuracy</strong></td>
+            <td><div class="meter-bar"><div class="meter-fill" style="width:45%;background:var(--amber)"></div></div> Mismatch</td>
+            <td><div class="meter-bar"><div class="meter-fill" style="width:80%;background:var(--olive)"></div></div> Accurate</td>
+            <td><strong style="color:var(--green)">Natural Light Photos</strong> — Eliminate color deception</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
