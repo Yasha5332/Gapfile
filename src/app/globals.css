@@ -1,38 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Special+Elite&display=swap');
 
 :root {
-  --paper: #EAE4D4;
-  --paper-raised: #F3EEDF;
-  --paper-card: #FAF7F0;
-  --ink: #26241D;
-  --ink-soft: #514E42;
-  --ink-muted: #787464;
-  --stamp: #A6301F;
-  --stamp-dark: #7A2116;
-  --stamp-light: rgba(166, 48, 31, 0.08);
-  --olive: #6B6B45;
-  --olive-light: rgba(107, 107, 69, 0.12);
-  --line: #C7BFA6;
-  --line-strong: #A89F80;
-  --gold: #B8860B;
-  --green: #2E7D32;
-  --green-light: rgba(46, 125, 50, 0.1);
-  --amber: #8B6914;
-  --amber-light: rgba(139, 105, 20, 0.1);
-  --shadow: 4px 4px 0 rgba(38, 36, 29, 0.07);
-  --shadow-lg: 8px 8px 0 rgba(38, 36, 29, 0.08);
+  /* DARK MODERN THEME PALETTE */
+  --paper: #090B0E;
+  --paper-raised: #11141C;
+  --paper-card: #171B26;
+  --ink: #F3F4F6;
+  --ink-soft: #9CA3AF;
+  --ink-muted: #6B7280;
+  --stamp: #FF3848;
+  --stamp-dark: #D91D30;
+  --stamp-light: rgba(255, 56, 72, 0.14);
+  --olive: #94A3B8;
+  --olive-light: rgba(148, 163, 184, 0.12);
+  --line: #202634;
+  --line-strong: #313A4F;
+  --gold: #F59E0B;
+  --green: #10B981;
+  --green-light: rgba(16, 185, 129, 0.14);
+  --amber: #F59E0B;
+  --amber-light: rgba(245, 158, 11, 0.14);
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 56, 72, 0.18);
   --tr: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* OPENCLAW AI TECH DARK THEME OVERLAYS */
-  --claw-bg: #0D0F12;
-  --claw-card: #15181E;
-  --claw-border: #262B35;
-  --claw-neon-red: #FF3B30;
-  --claw-neon-green: #30D158;
-  --claw-neon-blue: #0A84FF;
-  --claw-neon-amber: #FF9F0A;
-  --claw-text: #E5E9F0;
-  --claw-muted: #8E96A5;
+  --claw-bg: #0B0D12;
+  --claw-card: #151824;
+  --claw-border: #262B3A;
+  --claw-neon-red: #FF3848;
+  --claw-neon-green: #10B981;
+  --claw-neon-blue: #3B82F6;
+  --claw-neon-amber: #F59E0B;
+  --claw-text: #F3F4F6;
+  --claw-muted: #9CA3AF;
 }
 
 /* OPENCLAW BOT TERMINAL STYLES */
@@ -135,10 +136,14 @@ html {
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
 }
 
 .stencil {
@@ -146,7 +151,7 @@ body {
 }
 
 .mono {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'JetBrains Mono', 'IBM Plex Mono', monospace;
 }
 
 .wrap {
