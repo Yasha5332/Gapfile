@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { ExhibitDemo } from '@/components/ExhibitDemo';
+import { RealtimeBotShowcase } from '@/components/RealtimeBotShowcase';
 import { MATRIX_DATA } from '@/data/matrix';
 import { ROADMAP_DATA, PRICING_PLANS, CASE_STUDIES, FAQS } from '@/data/roadmap';
 
@@ -74,6 +75,11 @@ export default function HomePage() {
           </div>
 
           <ExhibitDemo />
+        </div>
+
+        {/* OPENCLAW AI STYLE REALTIME BOT SHOWCASE */}
+        <div className="wrap">
+          <RealtimeBotShowcase />
         </div>
       </header>
 

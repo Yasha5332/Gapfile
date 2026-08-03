@@ -22,6 +22,104 @@
   --shadow: 4px 4px 0 rgba(38, 36, 29, 0.07);
   --shadow-lg: 8px 8px 0 rgba(38, 36, 29, 0.08);
   --tr: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* OPENCLAW AI TECH DARK THEME OVERLAYS */
+  --claw-bg: #0D0F12;
+  --claw-card: #15181E;
+  --claw-border: #262B35;
+  --claw-neon-red: #FF3B30;
+  --claw-neon-green: #30D158;
+  --claw-neon-blue: #0A84FF;
+  --claw-neon-amber: #FF9F0A;
+  --claw-text: #E5E9F0;
+  --claw-muted: #8E96A5;
+}
+
+/* OPENCLAW BOT TERMINAL STYLES */
+.claw-terminal {
+  background: var(--claw-card);
+  border: 1.5px solid var(--claw-border);
+  border-radius: 6px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 59, 48, 0.15);
+  overflow: hidden;
+  position: relative;
+}
+
+.claw-header {
+  background: #0B0D10;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--claw-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.claw-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.claw-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.claw-dot.red { background: #FF5F56; }
+.claw-dot.yellow { background: #FFBD2E; }
+.claw-dot.green { background: #27C93F; }
+
+.claw-body {
+  padding: 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--claw-text);
+  line-height: 1.6;
+}
+
+.claw-log-line {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.claw-ts {
+  color: var(--claw-muted);
+  font-size: 11px;
+}
+
+.claw-tag {
+  color: var(--claw-neon-green);
+  font-weight: 600;
+}
+
+.claw-tag.warn {
+  color: var(--claw-neon-amber);
+}
+
+.claw-tag.err {
+  color: var(--claw-neon-red);
+}
+
+.claw-pulse-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: rgba(48, 209, 88, 0.1);
+  border: 1px solid rgba(48, 209, 88, 0.3);
+  border-radius: 3px;
+  color: var(--claw-neon-green);
+  font-size: 11px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 * {
