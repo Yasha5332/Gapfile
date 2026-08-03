@@ -131,7 +131,11 @@ export default function PrototypePage() {
 
         {/* ACTIVE TAB CONTENT */}
         <div style={{ marginBottom: '60px' }}>
-          {activeTab === 'analyzer' && <AnalyzerTab />}
+          {activeTab === 'analyzer' && (
+            <React.Suspense fallback={<div className="panel mono">Loading Analyzer...</div>}>
+              <AnalyzerTab />
+            </React.Suspense>
+          )}
           {activeTab === 'matrix' && <MatrixTab />}
           {activeTab === 'slang' && <SlangCloudTab />}
           {activeTab === 'architecture' && <ArchitectureTab />}

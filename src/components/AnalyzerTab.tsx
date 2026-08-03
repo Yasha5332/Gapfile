@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { PRODUCT_DATA, generateCustomReport } from '@/data/products';
 import { ProductData } from '@/types';
 
 export const AnalyzerTab: React.FC = () => {
   const { lang, tp } = useLanguage();
+  const searchParams = useSearchParams();
   const [selectedKey, setSelectedKey] = useState<string>('skincare');
   const [customUrl, setCustomUrl] = useState<string>('');
   const [analyzing, setAnalyzing] = useState<boolean>(false);
@@ -15,6 +17,17 @@ export const AnalyzerTab: React.FC = () => {
   const [report, setReport] = useState<ProductData | null>(PRODUCT_DATA.skincare);
   const [showReport, setShowReport] = useState<boolean>(true);
   const [openHooks, setOpenHooks] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const urlParam = searchParams.get('url');
+    if (urlParam) {
+      setCustomUrl(urlParam);
+      // Auto run analysis for custom URL passed from landing page
+      const customData = generateCustomReport(urlParam);
+      setReport(customData);
+      setShowReport(true);
+    }
+  }, [searchParams]);
 
   const toggleHook = (id: string) => {
     setOpenHooks(prev => ({ ...prev, [id]: !prev[id] }));

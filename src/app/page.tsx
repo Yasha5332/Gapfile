@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { ExhibitDemo } from '@/components/ExhibitDemo';
 import { MATRIX_DATA } from '@/data/matrix';
@@ -9,6 +10,18 @@ import { ROADMAP_DATA, PRICING_PLANS, CASE_STUDIES, FAQS } from '@/data/roadmap'
 
 export default function HomePage() {
   const { lang, t } = useLanguage();
+  const router = useRouter();
+  const [heroUrl, setHeroUrl] = useState('');
+  const [showZaloModal, setShowZaloModal] = useState(false);
+
+  const handleHeroAnalyze = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (heroUrl.trim()) {
+      router.push(`/prototype?url=${encodeURIComponent(heroUrl.trim())}`);
+    } else {
+      router.push('/prototype');
+    }
+  };
 
   return (
     <div>
@@ -23,13 +36,34 @@ export default function HomePage() {
             <h1 dangerouslySetInnerHTML={{ __html: t.heroTitle }} />
             <p className="lede" dangerouslySetInnerHTML={{ __html: t.heroLede }} />
             
+            {/* HERO QUICK SCANNER FORM */}
+            <form onSubmit={handleHeroAnalyze} style={{ marginBottom: '24px' }}>
+              <div className="input-row">
+                <input
+                  type="text"
+                  className="url-input mono"
+                  placeholder={t.heroInputPlaceholder || "Paste Shopee, TikTok, Amazon URL..."}
+                  value={heroUrl}
+                  onChange={(e) => setHeroUrl(e.target.value)}
+                />
+                <button type="submit" className="btn btn-primary">
+                  {t.heroQuickRun || "⚡ Quick Analyze →"}
+                </button>
+              </div>
+            </form>
+
             <div className="hero-ctas">
-              <Link href="/prototype" className="btn btn-primary">
+              <Link href="/prototype" className="btn btn-ghost">
                 {t.heroBtnP}
               </Link>
-              <a href="#engine" className="btn btn-ghost">
-                {t.heroBtnG}
-              </a>
+              <button
+                type="button"
+                className="btn btn-ghost mono"
+                onClick={() => setShowZaloModal(true)}
+                style={{ borderColor: 'var(--stamp)', color: 'var(--stamp)' }}
+              >
+                {t.heroZaloBtn || "💬 Connect Zalo Bot"}
+              </button>
             </div>
 
             <div className="trust-micro mono">
@@ -42,6 +76,90 @@ export default function HomePage() {
           <ExhibitDemo />
         </div>
       </header>
+
+      {/* ZALO BOT MODAL DEMO */}
+      {showZaloModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(38, 36, 29, 0.75)',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}
+          onClick={() => setShowZaloModal(false)}
+        >
+          <div
+            style={{
+              background: 'var(--paper-card)',
+              border: '2px solid var(--stamp)',
+              borderRadius: '6px',
+              maxWidth: '520px',
+              width: '100%',
+              padding: '28px',
+              boxShadow: 'var(--shadow-lg)',
+              position: 'relative'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <span className="mono" style={{ fontWeight: 700, color: 'var(--stamp)', fontSize: '13px' }}>
+                🤖 ZALO CHATBOT TELEMETRY INTEGRATION
+              </span>
+              <button
+                onClick={() => setShowZaloModal(false)}
+                style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: 'var(--ink)' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '10px' }}>
+              {lang === 'en' ? 'Receive Instant Competitor Weakness Alerts in Zalo' : 'Nhận Báo Cáo Điểm Yếu Đối Thủ Trực Tiếp Trên Zalo'}
+            </h3>
+
+            <p style={{ fontSize: '14px', color: 'var(--ink-soft)', marginBottom: '18px', lineHeight: 1.5 }}>
+              {lang === 'en'
+                ? 'Send any Shopee, TikTok Shop, or Lazada product link directly to our Zalo Bot (@GapFileBot). The bot ingests the listing, runs slang NLP extraction, and returns structured weakness playbooks directly to your phone in 30 seconds.'
+                : 'Gửi bất kỳ link Shopee, TikTok Shop hoặc Lazada nào tới Zalo Bot (@GapFileBot). AI sẽ thu thập đánh giá, phân tích teencode và trả kịch bản marketing trực tiếp về Zalo của bạn trong 30 giây.'}
+            </p>
+
+            <div
+              style={{
+                background: 'var(--paper)',
+                border: '1.5px solid var(--line-strong)',
+                borderRadius: '4px',
+                padding: '16px',
+                marginBottom: '20px',
+                fontSize: '13px'
+              }}
+              className="mono"
+            >
+              <div style={{ color: 'var(--olive)', marginBottom: '6px' }}>💬 Zalo Bot Live Simulation:</div>
+              <div style={{ color: 'var(--ink-soft)', marginBottom: '4px' }}>👤 User: <em>https://shopee.vn/product/12345/glow-serum</em></div>
+              <div style={{ color: 'var(--stamp)', fontWeight: 600 }}>🤖 Bot: ⚡ Report Ready! Top issue: Shipping Delays (61 mentions). Lead ad hook: "Guarantee 24h dispatch".</div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  setShowZaloModal(false);
+                  router.push('/prototype');
+                }}
+              >
+                {lang === 'en' ? 'Launch Interactive Web Prototype →' : 'Mở Web Prototype Tương Tác →'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* PLATFORM BAR */}
       <div className="platform-bar">
