@@ -6,6 +6,10 @@ import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { ExhibitDemo } from '@/components/ExhibitDemo';
 import { RealtimeBotShowcase } from '@/components/RealtimeBotShowcase';
+import { ZaloBotIntroSection } from '@/components/ZaloBotIntroSection';
+import { HeroCanvas } from '@/components/HeroCanvas';
+import { Typewriter } from '@/components/Typewriter';
+import { LLMBotIntro } from '@/components/LLMBotIntro';
 import { MATRIX_DATA } from '@/data/matrix';
 import { ROADMAP_DATA, PRICING_PLANS, CASE_STUDIES, FAQS } from '@/data/roadmap';
 
@@ -27,43 +31,66 @@ export default function HomePage() {
   return (
     <div>
       {/* HERO SECTION */}
-      <header className="hero">
-        <div className="wrap hero-grid">
+      <header className="hero hero-animated" style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* ANIMATED CANVAS BACKGROUND */}
+        <HeroCanvas />
+
+        {/* HERO CONTENT — sits above canvas */}
+        <div className="wrap hero-grid" style={{ position: 'relative', zIndex: 1 }}>
           <div>
-            <div className="file-no mono">
-              <span className="status-dot"></span>
+            <div className="file-no mono hero-tag-anim">
+              <span className="status-dot" />
               <span>{t.heroTag}</span>
             </div>
-            <h1 dangerouslySetInnerHTML={{ __html: t.heroTitle }} />
-            <p className="lede" dangerouslySetInnerHTML={{ __html: t.heroLede }} />
-            
+            <h1 className="hero-h1-anim" dangerouslySetInnerHTML={{ __html: t.heroTitle }} />
+
+            {/* ANIMATED TYPEWRITER SUBLINE */}
+            <p className="lede hero-lede-anim">
+              <Typewriter
+                phrases={[
+                  lang === 'en'
+                    ? 'Slang-aware NLP · 30s pipeline · Zalo bot delivery'
+                    : 'NLP Teencode VN · Pipeline 30 giây · Giao về Zalo',
+                  lang === 'en'
+                    ? 'Shopee · TikTok Shop · Amazon · Lazada'
+                    : 'Shopee · TikTok Shop · Amazon · Lazada',
+                  lang === 'en'
+                    ? '1,842 reviews → weakness playbook in 30 seconds'
+                    : '1,842 đánh giá → kịch bản marketing trong 30 giây',
+                ]}
+                typingSpeed={38}
+                pauseMs={2400}
+                style={{ fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit' }}
+              />
+            </p>
+
             {/* HERO QUICK SCANNER FORM */}
-            <form onSubmit={handleHeroAnalyze} style={{ marginBottom: '24px' }}>
-              <div className="input-row">
+            <form onSubmit={handleHeroAnalyze} style={{ marginBottom: '24px' }} className="hero-form-anim">
+              <div className="input-row hero-input-glow">
                 <input
                   type="text"
                   className="url-input mono"
-                  placeholder={t.heroInputPlaceholder || "Paste Shopee, TikTok, Amazon URL..."}
+                  placeholder={t.heroInputPlaceholder || 'Paste Shopee, TikTok, Amazon URL...'}
                   value={heroUrl}
                   onChange={(e) => setHeroUrl(e.target.value)}
                 />
-                <button type="submit" className="btn btn-primary">
-                  {t.heroQuickRun || "⚡ Quick Analyze →"}
+                <button type="submit" className="btn btn-primary btn-glow">
+                  {t.heroQuickRun || '⚡ Quick Analyze →'}
                 </button>
               </div>
             </form>
 
-            <div className="hero-ctas">
+            <div className="hero-ctas hero-ctas-anim">
               <Link href="/prototype" className="btn btn-ghost">
                 {t.heroBtnP}
               </Link>
               <button
                 type="button"
-                className="btn btn-ghost mono"
+                className="btn btn-ghost mono btn-zalo-pulse"
                 onClick={() => setShowZaloModal(true)}
                 style={{ borderColor: 'var(--stamp)', color: 'var(--stamp)' }}
               >
-                {t.heroZaloBtn || "💬 Connect Zalo Bot"}
+                {t.heroZaloBtn || '💬 Connect Zalo Bot'}
               </button>
             </div>
 
@@ -74,11 +101,13 @@ export default function HomePage() {
             </div>
           </div>
 
-          <ExhibitDemo />
+          <div className="hero-exhibit-anim">
+            <ExhibitDemo />
+          </div>
         </div>
 
         {/* OPENCLAW AI STYLE REALTIME BOT SHOWCASE */}
-        <div className="wrap">
+        <div className="wrap" style={{ position: 'relative', zIndex: 1 }}>
           <RealtimeBotShowcase />
         </div>
       </header>
@@ -207,6 +236,12 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* ZALO BOT INTRO SECTION */}
+      <ZaloBotIntroSection />
+
+      {/* LLM BOT INTRO — OpenClaw AI animated */}
+      <LLMBotIntro />
 
       {/* METHODOLOGY ENGINE */}
       <section id="engine">

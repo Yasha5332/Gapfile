@@ -1269,12 +1269,13 @@ select.url-input {
 .rm { font-size: 12px; color: var(--olive); font-weight: 600; margin-top: 4px; }
 
 .exec-box {
-  background: var(--ink);
+  background: var(--claw-card);
   color: var(--paper);
   padding: 20px 24px;
   border-radius: 4px;
   margin-bottom: 28px;
   box-shadow: var(--shadow);
+  border: 1px solid var(--line-strong);
 }
 
 .exec-lbl {
@@ -1496,4 +1497,839 @@ select.url-input {
   .case-card { padding: 20px 16px; }
   .plan { padding: 24px 18px; }
   .nav-btn-hide-mobile { display: none; }
+}
+
+/* =========================================================
+   ZALO BOT INTRO SECTION
+   ========================================================= */
+
+.zalo-intro-section {
+  padding: 90px 0;
+  background: linear-gradient(180deg, var(--paper-raised) 0%, var(--paper) 100%);
+  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+
+.zalo-intro-section::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -80px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(18, 140, 126, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.zalo-intro-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.zalo-intro-title {
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 12px 0 16px;
+  letter-spacing: -0.02em;
+}
+
+.zalo-intro-sub {
+  font-size: 16px;
+  color: var(--ink-soft);
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* 3-STEP FLOW */
+.zalo-flow-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 56px;
+  flex-wrap: wrap;
+}
+
+.zalo-flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  flex: 1;
+  min-width: 160px;
+  max-width: 220px;
+  padding: 24px 16px;
+  background: var(--paper-card);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.zalo-flow-step:hover {
+  border-color: #128C7E;
+  transform: translateY(-3px);
+}
+
+.zalo-flow-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--stamp);
+  letter-spacing: 0.12em;
+}
+
+.zalo-flow-icon {
+  font-size: 28px;
+}
+
+.zalo-flow-label {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.zalo-flow-arrow {
+  font-size: 22px;
+  color: var(--line-strong);
+  padding: 0 8px;
+  flex-shrink: 0;
+}
+
+/* MAIN GRID */
+.zalo-main-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.zalo-phone-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.zalo-scenario-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.zalo-scenario-btn {
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1.5px solid var(--line-strong);
+  background: var(--paper-card);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: inherit;
+}
+
+.zalo-scenario-btn:hover {
+  border-color: #128C7E;
+  color: #128C7E;
+}
+
+.zalo-scenario-btn.active {
+  background: #075E54;
+  border-color: #128C7E;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(18, 140, 126, 0.3);
+}
+
+/* PHONE FRAME */
+.zalo-phone {
+  width: 300px;
+  background: #ECE5DD;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 2px rgba(18,140,126,0.3);
+  border: 1px solid #128C7E;
+  display: flex;
+  flex-direction: column;
+}
+
+.zalo-phone-status {
+  background: #075E54;
+  padding: 6px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.zalo-chat-header {
+  background: #075E54;
+  padding: 10px 16px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.zalo-bot-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF3848, #FF6B6B);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(255,56,72,0.35);
+}
+
+.zalo-chat-body {
+  flex: 1;
+  min-height: 260px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zalo-bubble {
+  animation: slideUp 0.25s ease-out;
+  display: flex;
+}
+
+.zalo-bubble.user {
+  justify-content: flex-end;
+}
+
+.zalo-bubble.bot {
+  justify-content: flex-start;
+}
+
+.zalo-bubble.user > * {
+  background: #DCF8C6;
+  border-radius: 12px 12px 0 12px;
+  padding: 8px 12px;
+  max-width: 85%;
+  font-size: 11px;
+  color: #111;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+}
+
+.zalo-bubble.bot > * {
+  background: #fff;
+  border-radius: 12px 12px 12px 0;
+  padding: 10px 12px;
+  max-width: 90%;
+  font-size: 11px;
+  color: #111;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+  line-height: 1.5;
+}
+
+.zalo-report-bubble {
+  font-size: 11px !important;
+  font-family: monospace;
+  border-left: 3px solid #FF3848 !important;
+  white-space: pre-wrap;
+}
+
+.zalo-hook-bubble {
+  font-size: 11px !important;
+  font-style: italic;
+  border-left: 3px solid #F59E0B !important;
+  color: #444 !important;
+}
+
+.zalo-chat-input {
+  background: #f0f0f0;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #ddd;
+}
+
+.zalo-send-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* TYPING INDICATOR */
+.typing-indicator {
+  align-items: center;
+}
+
+.typing-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #888;
+  display: inline-block;
+  margin: 0 2px;
+  animation: typingBounce 1.2s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+.typing-cursor {
+  animation: cursorBlink 1s step-end infinite;
+  font-weight: 700;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* FEATURE CARDS */
+.zalo-features {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.zalo-feature-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--olive);
+  font-weight: 600;
+}
+
+.zalo-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zalo-feature-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: var(--paper-card);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 16px;
+  border-left: 3px solid var(--feat-color, var(--stamp));
+  transition: transform 0.18s ease;
+}
+
+.zalo-feature-card:hover {
+  transform: translateX(3px);
+}
+
+.zalo-feature-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.zalo-feature-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+
+.zalo-feature-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+.zalo-cta-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.zalo-trust-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  padding-top: 12px;
+  border-top: 1px dashed var(--line-strong);
+}
+
+/* ANIMATIONS */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE ZALO INTRO */
+@media (max-width: 900px) {
+  .zalo-main-grid {
+    grid-template-columns: 1fr;
+  }
+  .zalo-phone-wrap {
+    order: -1;
+  }
+  .zalo-phone {
+    width: 100%;
+    max-width: 360px;
+  }
+  .zalo-flow-steps {
+    gap: 12px;
+  }
+}
+
+/* =========================================================
+   OPENCLAW-STYLE HERO ANIMATIONS
+   ========================================================= */
+
+/* Hero entrance animations */
+.hero-tag-anim {
+  animation: heroFadeUp 0.6s ease-out both;
+}
+.hero-h1-anim {
+  animation: heroFadeUp 0.7s ease-out 0.1s both;
+}
+.hero-lede-anim {
+  animation: heroFadeUp 0.7s ease-out 0.2s both;
+}
+.hero-form-anim {
+  animation: heroFadeUp 0.7s ease-out 0.3s both;
+}
+.hero-ctas-anim {
+  animation: heroFadeUp 0.7s ease-out 0.4s both;
+}
+.hero-exhibit-anim {
+  animation: heroFadeRight 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+}
+
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroFadeRight {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Hero animated background override */
+.hero-animated {
+  background: linear-gradient(180deg, #090B0E 0%, #0D1018 60%, #11141C 100%) !important;
+}
+
+/* Glowing input border */
+.hero-input-glow .url-input:focus {
+  border-color: var(--stamp);
+  box-shadow: 0 0 0 3px rgba(255, 56, 72, 0.18), 0 0 20px rgba(255, 56, 72, 0.1);
+}
+
+/* Glowing CTA button */
+.btn-glow {
+  box-shadow: 3px 3px 0 var(--ink), 0 0 20px rgba(255, 56, 72, 0.3) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.btn-glow:hover {
+  box-shadow: 4px 4px 0 var(--ink), 0 0 32px rgba(255, 56, 72, 0.5) !important;
+  transform: translate(-2px, -2px) !important;
+}
+
+/* Zalo button pulse animation */
+.btn-zalo-pulse {
+  position: relative;
+  overflow: hidden;
+}
+.btn-zalo-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  animation: zaloPulseRing 2.5s ease-out infinite;
+  border: 1.5px solid var(--stamp);
+  opacity: 0;
+}
+@keyframes zaloPulseRing {
+  0%   { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.12); opacity: 0; }
+}
+
+/* =========================================================
+   LLM BOT INTRO SECTION (OpenClaw aesthetic)
+   ========================================================= */
+
+.llm-intro-section {
+  padding: 100px 0;
+  background: #080A0F;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Radial glow behind the section */
+.llm-intro-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 900px;
+  height: 500px;
+  background: radial-gradient(ellipse at center, rgba(255,56,72,0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* Scanline sweep */
+.llm-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,56,72,0.18) 40%, rgba(59,130,246,0.14) 60%, transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* HEADER */
+.llm-header {
+  text-align: center;
+  margin-bottom: 52px;
+  position: relative;
+  z-index: 1;
+}
+
+.llm-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: #10B981;
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding: 4px 14px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 3px;
+}
+
+.llm-title {
+  font-size: clamp(28px, 3.8vw, 46px);
+  font-weight: 700;
+  line-height: 1.18;
+  color: var(--ink);
+  margin: 0 0 16px;
+  letter-spacing: -0.02em;
+}
+
+.llm-accent {
+  background: linear-gradient(90deg, #FF3848, #FF6B6B, #F59E0B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.llm-sub {
+  font-size: 16px;
+  color: var(--ink-soft);
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* GRID */
+.llm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 36px;
+}
+
+/* TERMINAL WRAPPER */
+.llm-terminal-wrap {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #1E2535;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0B0D12;
+  box-shadow: 0 0 0 1px rgba(255,56,72,0.1), 0 16px 48px rgba(0,0,0,0.5);
+  transition: box-shadow 0.3s ease;
+}
+
+.llm-terminal-wrap:hover {
+  box-shadow: 0 0 0 1px rgba(255,56,72,0.25), 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,56,72,0.06);
+}
+
+.llm-terminal-chrome {
+  background: #080A0E;
+  border-bottom: 1px solid #1A1F2E;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.llm-terminal-body {
+  padding: 18px 20px;
+  min-height: 280px;
+  max-height: 340px;
+  overflow-y: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  line-height: 1.7;
+  scroll-behavior: smooth;
+}
+
+.llm-token-line {
+  animation: tokenFadeIn 0.2s ease-out both;
+  white-space: pre-wrap;
+}
+
+@keyframes tokenFadeIn {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* BADGES */
+.llm-badges {
+  display: flex;
+  gap: 10px;
+  padding: 14px 16px;
+  border-top: 1px solid #1A1F2E;
+  flex-wrap: wrap;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.llm-badges.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.llm-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 80px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid;
+  border-radius: 6px;
+  animation: badgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes badgePop {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* OUTPUT PANEL */
+.llm-output-panel {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #1E2535;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0D1018;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+}
+
+.llm-output-header {
+  background: #080A0E;
+  border-bottom: 1px solid #1A1F2E;
+  padding: 10px 16px;
+  font-size: 11px;
+  color: #6B7280;
+  letter-spacing: 0.1em;
+}
+
+.llm-output-list {
+  flex: 1;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.llm-output-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-left: 3px solid var(--card-color, var(--stamp));
+  border-radius: 6px;
+  padding: 12px 14px;
+  animation: cardSlide 0.3s ease-out both;
+}
+
+@keyframes cardSlide {
+  from { opacity: 0; transform: translateX(10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.llm-output-label {
+  font-size: 10px;
+  color: #4B5563;
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.llm-output-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+
+.llm-output-detail {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.llm-output-bar {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.llm-output-fill {
+  height: 100%;
+  border-radius: 2px;
+  animation: barGrow 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes barGrow {
+  from { width: 0% !important; }
+}
+
+/* ZALO DELIVERY CARD */
+.llm-zalo-delivery {
+  margin: 0 14px 14px;
+  padding: 16px;
+  background: rgba(255,56,72,0.05);
+  border: 1px solid rgba(255,56,72,0.18);
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s;
+}
+
+.llm-zalo-delivery.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* CTA ROW */
+.llm-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.llm-cta-btn {
+  font-size: 15px;
+  padding: 14px 28px;
+  box-shadow: 3px 3px 0 rgba(255,255,255,0.15), 0 0 24px rgba(255,56,72,0.3) !important;
+}
+
+.llm-cta-btn:hover {
+  box-shadow: 4px 4px 0 rgba(255,255,255,0.2), 0 0 36px rgba(255,56,72,0.5) !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .llm-grid {
+    grid-template-columns: 1fr;
+  }
+  .llm-badges {
+    flex-wrap: wrap;
+  }
+  .llm-badge {
+    min-width: calc(50% - 8px);
+    flex: none;
+  }
+}
+
+/* =========================================================
+   GLOBAL MICRO-ANIMATIONS — scroll fade-in
+   ========================================================= */
+
+/* Section entrance for all major sections */
+section {
+  animation: sectionFadeIn 0.6s ease-out both;
+}
+
+@keyframes sectionFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Neon glow on red elements */
+.stamp, [style*="var(--stamp)"] {
+  text-shadow: 0 0 20px rgba(255, 56, 72, 0.3);
+}
+
+/* Engine card hover lift */
+.engine-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.engine-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--stamp);
+  box-shadow: 0 12px 32px rgba(255,56,72,0.12);
+}
+
+/* Case card hover */
+.case-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.case-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.4);
+}
+
+/* Strip stat counter glow */
+.strip-stat .num {
+  animation: numGlow 3s ease-in-out infinite alternate;
+}
+@keyframes numGlow {
+  from { text-shadow: 0 0 8px rgba(255,56,72,0.2); }
+  to   { text-shadow: 0 0 24px rgba(255,56,72,0.5); }
+}
+
+/* Comparison table row highlight on hover */
+.comp-table tbody tr {
+  transition: background 0.15s ease;
+}
+.comp-table tbody tr:hover {
+  background: rgba(255,56,72,0.04);
 }

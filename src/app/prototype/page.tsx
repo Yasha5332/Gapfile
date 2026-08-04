@@ -8,12 +8,23 @@ import { SlangCloudTab } from '@/components/SlangCloudTab';
 import { ArchitectureTab } from '@/components/ArchitectureTab';
 import { BusinessModelTab } from '@/components/BusinessModelTab';
 import { PRDTab } from '@/components/PRDTab';
+import { ZaloBotTab } from '@/components/ZaloBotTab';
 
-type TabKey = 'analyzer' | 'matrix' | 'slang' | 'architecture' | 'business' | 'prd';
+type TabKey = 'analyzer' | 'zalobot' | 'matrix' | 'slang' | 'architecture' | 'business' | 'prd';
 
 export default function PrototypePage() {
   const { lang, tp } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabKey>('analyzer');
+
+  const tabs: Array<{ key: TabKey; label: string; labelVi: string }> = [
+    { key: 'analyzer',     label: '🔍 Analyzer',         labelVi: '🔍 Phân tích' },
+    { key: 'zalobot',      label: '💬 Zalo Bot',          labelVi: '💬 Zalo Bot' },
+    { key: 'matrix',       label: '⚔️ Benchmark Matrix', labelVi: '⚔️ Ma trận So sánh' },
+    { key: 'slang',        label: '🗣️ Slang Cloud',       labelVi: '🗣️ Teencode / Slang' },
+    { key: 'architecture', label: '🏗️ Architecture',     labelVi: '🏗️ Kiến trúc System' },
+    { key: 'business',     label: '💰 Business Model',   labelVi: '💰 Mô hình Kinh doanh' },
+    { key: 'prd',          label: '📋 PRD',               labelVi: '📋 Bản PRD' },
+  ];
 
   return (
     <div style={{ paddingTop: '20px' }}>
@@ -21,7 +32,7 @@ export default function PrototypePage() {
         {/* HERO PROTOTYPE HEADER */}
         <div style={{ textAlign: 'center', padding: '40px 0 28px' }}>
           <div className="hero-eye mono">
-            <span className="status-dot"></span>
+            <span className="status-dot" />
             <span>{tp.heroEye}</span>
           </div>
 
@@ -35,98 +46,45 @@ export default function PrototypePage() {
           </p>
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: '36px', flexWrap: 'wrap', marginBottom: '32px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '26px', fontWeight: 700, color: 'var(--stamp)' }} className="mono">100,000+</div>
-              <div style={{ fontSize: '11px', color: 'var(--olive)', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>{tp.st1}</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '26px', fontWeight: 700, color: 'var(--stamp)' }} className="mono">~30s</div>
-              <div style={{ fontSize: '11px', color: 'var(--olive)', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>{tp.st2}</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '26px', fontWeight: 700, color: 'var(--stamp)' }} className="mono">99.4%</div>
-              <div style={{ fontSize: '11px', color: 'var(--olive)', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>{tp.st3}</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '26px', fontWeight: 700, color: 'var(--stamp)' }} className="mono">17/20</div>
-              <div style={{ fontSize: '11px', color: 'var(--olive)', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>{tp.st4}</div>
-            </div>
+            {[
+              { num: '100,000+', label: tp.st1 },
+              { num: '~30s',     label: tp.st2 },
+              { num: '99.4%',    label: tp.st3 },
+              { num: '17/20',    label: tp.st4 },
+            ].map((stat, i) => (
+              <div key={i} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '26px', fontWeight: 700, color: 'var(--stamp)' }} className="mono">{stat.num}</div>
+                <div style={{ fontSize: '11px', color: 'var(--olive)', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* TAB BUTTONS BAR */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '24px', borderBottom: '1.5px solid var(--line-strong)', paddingBottom: '12px' }}>
-          <button
-            className={`btn-s mono ${activeTab === 'analyzer' ? 'active' : ''}`}
-            onClick={() => setActiveTab('analyzer')}
-            style={{
-              background: activeTab === 'analyzer' ? 'var(--stamp)' : 'var(--paper-card)',
-              color: activeTab === 'analyzer' ? 'var(--paper)' : 'var(--ink)',
-              borderColor: activeTab === 'analyzer' ? 'var(--stamp)' : 'var(--line-strong)'
-            }}
-          >
-            {tp.a}
-          </button>
-
-          <button
-            className={`btn-s mono ${activeTab === 'matrix' ? 'active' : ''}`}
-            onClick={() => setActiveTab('matrix')}
-            style={{
-              background: activeTab === 'matrix' ? 'var(--stamp)' : 'var(--paper-card)',
-              color: activeTab === 'matrix' ? 'var(--paper)' : 'var(--ink)',
-              borderColor: activeTab === 'matrix' ? 'var(--stamp)' : 'var(--line-strong)'
-            }}
-          >
-            {tp.m}
-          </button>
-
-          <button
-            className={`btn-s mono ${activeTab === 'slang' ? 'active' : ''}`}
-            onClick={() => setActiveTab('slang')}
-            style={{
-              background: activeTab === 'slang' ? 'var(--stamp)' : 'var(--paper-card)',
-              color: activeTab === 'slang' ? 'var(--paper)' : 'var(--ink)',
-              borderColor: activeTab === 'slang' ? 'var(--stamp)' : 'var(--line-strong)'
-            }}
-          >
-            {tp.s}
-          </button>
-
-          <button
-            className={`btn-s mono ${activeTab === 'architecture' ? 'active' : ''}`}
-            onClick={() => setActiveTab('architecture')}
-            style={{
-              background: activeTab === 'architecture' ? 'var(--stamp)' : 'var(--paper-card)',
-              color: activeTab === 'architecture' ? 'var(--paper)' : 'var(--ink)',
-              borderColor: activeTab === 'architecture' ? 'var(--stamp)' : 'var(--line-strong)'
-            }}
-          >
-            {tp.r}
-          </button>
-
-          <button
-            className={`btn-s mono ${activeTab === 'business' ? 'active' : ''}`}
-            onClick={() => setActiveTab('business')}
-            style={{
-              background: activeTab === 'business' ? 'var(--stamp)' : 'var(--paper-card)',
-              color: activeTab === 'business' ? 'var(--paper)' : 'var(--ink)',
-              borderColor: activeTab === 'business' ? 'var(--stamp)' : 'var(--line-strong)'
-            }}
-          >
-            {tp.b}
-          </button>
-
-          <button
-            className={`btn-s mono ${activeTab === 'prd' ? 'active' : ''}`}
-            onClick={() => setActiveTab('prd')}
-            style={{
-              background: activeTab === 'prd' ? 'var(--stamp)' : 'var(--paper-card)',
-              color: activeTab === 'prd' ? 'var(--paper)' : 'var(--ink)',
-              borderColor: activeTab === 'prd' ? 'var(--stamp)' : 'var(--line-strong)'
-            }}
-          >
-            {tp.p}
-          </button>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '24px', borderBottom: '1.5px solid var(--line-strong)', paddingBottom: '12px' }}>
+          {tabs.map(tab => {
+            const isActive = activeTab === tab.key;
+            const isZalo = tab.key === 'zalobot';
+            return (
+              <button
+                key={tab.key}
+                className="btn-s mono"
+                onClick={() => setActiveTab(tab.key)}
+                style={{
+                  background: isActive
+                    ? isZalo ? '#075E54' : 'var(--stamp)'
+                    : 'var(--paper-card)',
+                  color: isActive ? '#fff' : 'var(--ink)',
+                  borderColor: isActive
+                    ? isZalo ? '#128C7E' : 'var(--stamp)'
+                    : 'var(--line-strong)',
+                  boxShadow: isActive && isZalo ? '0 0 12px rgba(18, 140, 126, 0.4)' : 'none',
+                }}
+              >
+                {lang === 'en' ? tab.label : tab.labelVi}
+              </button>
+            );
+          })}
         </div>
 
         {/* ACTIVE TAB CONTENT */}
@@ -136,11 +94,12 @@ export default function PrototypePage() {
               <AnalyzerTab />
             </React.Suspense>
           )}
-          {activeTab === 'matrix' && <MatrixTab />}
-          {activeTab === 'slang' && <SlangCloudTab />}
+          {activeTab === 'zalobot'      && <ZaloBotTab />}
+          {activeTab === 'matrix'       && <MatrixTab />}
+          {activeTab === 'slang'        && <SlangCloudTab />}
           {activeTab === 'architecture' && <ArchitectureTab />}
-          {activeTab === 'business' && <BusinessModelTab />}
-          {activeTab === 'prd' && <PRDTab />}
+          {activeTab === 'business'     && <BusinessModelTab />}
+          {activeTab === 'prd'          && <PRDTab />}
         </div>
       </div>
     </div>
